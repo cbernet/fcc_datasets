@@ -2,6 +2,7 @@ import basedir
 
 import glob
 import os
+import pprint
 
 class File(object):
 
@@ -10,11 +11,23 @@ class File(object):
         self.name = os.path.basename(path) 
         self._check()
 
-    def check(self):
-        pass
+    def _check(self):
+        self.flags = dict()
+        to_check = ['zero_size', 
+                    'n_events']
+        for testname in to_check:
+            method = getattr(self, '_check_{}'.format(testname))
+            self.flags[testname] = method()
+  
+    def _check_zero_size(self):
+        statinfo = os.stat(self.path)
+        return statinfo.st_size==0
 
+    def _check_n_events(self):
+        return 100
+        
     def __str__(self):
-        return self.name
+        return '{:<30} : {}'.format(self.name, pprint.pformat(self.flags))
         
 
 class Directory(object):
@@ -39,6 +52,7 @@ class Dataset(Directory):
         for path in glob.glob(self.abspath('*.root')):
             the_file = File(path)
             self.all_files[the_file.name] = the_file
+            print the_file
 
     def __str__(self):
         lines = [self.name]

@@ -92,4 +92,7 @@ class Dataset(Directory):
     def __str__(self):
         lines = [self.name]
         lines.append(self.path)
+        files = map(str, self.all_files.values())
+        lines.extend(files)
         return '\n'.join(lines)
+        

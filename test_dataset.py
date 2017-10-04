@@ -38,7 +38,10 @@ class TestDataset(unittest.TestCase):
     def test_4_yaml(self):
         """Test that the yaml file can be written and read."""
         dataset = Dataset(dataset_name, dataset_pattern, cache=True)
-        dataset.write_yaml()
+        data_written = dataset.write_yaml()
+        data_read = dataset.read_yaml()
+        self.assertDictEqual(data_written, data_read)
+        
         
         
         

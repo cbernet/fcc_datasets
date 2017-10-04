@@ -120,7 +120,14 @@ class Dataset(Directory):
         with open(fname, mode='w') as outfile:
                 yaml.dump(data, outfile,
                           default_flow_style=False)
+        return data
             
+    def read_yaml(self):
+        fname = self.abspath('info.yaml')
+        with open(fname, mode='r') as infile:
+            data = yaml.load(infile)
+            return data
+    
     def _read_from_cache(self):
         sh = shelve.open(self._cache_fname())
         self.__dict__ = copy.deepcopy(sh['dataset'].__dict__)

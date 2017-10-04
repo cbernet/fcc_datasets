@@ -1,4 +1,5 @@
 import basedir
+from versions import Versions
 
 import glob
 import os
@@ -61,19 +62,32 @@ class Directory(object):
 
 class Dataset(Directory):
 
-    def __init__(self, name, pattern='*.root', cache=True):
+    def __init__(self, name, pattern='*.root', cache=True,
+                 cfg=None):
         self.name = name
         self._uid = None
+        self._versions = None
         if cache: 
             self._read_from_cache()
+            # TODO : what if cache does not exist? 
         else:
             if self._uid is None:
                 self._uid = uuid.uuid4()
+            if cfg:
+                self._analyze_cfg(cfg)
             self.path = basedir.abspath(name)
             self.all_files = dict()
             self.good_files = dict()
             self._build_list_of_files(pattern)
             self._write_to_cache()
+
+    #----------------------------------------------------------------------
+    def _analyze_cfg(self, cfgname):
+        """Analyze the cfg used to build the dataset.
+        get the commit ids of the relevant imported packages
+        possibly find the mother sample(s)? 
+        """
+        self._versions = Versions(cfgname, ['heppy', 'fcc_ee_higgs']).tracked
 
     def _build_list_of_files(self, pattern):
         for path in glob.glob(self.abspath(pattern)):
@@ -116,6 +130,11 @@ class Dataset(Directory):
                 'xsection': 0.,
             }
         }
+        if self._versions:
+            software_data = dict()
+            for key, info in self._versions.iteritems():
+                software_data[key] = str(info['commitid'])
+            data['software'] = software_data
         fname = self.abspath('info.yaml')
         with open(fname, mode='w') as outfile:
                 yaml.dump(data, outfile,

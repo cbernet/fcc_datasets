@@ -6,12 +6,14 @@ from dataset import Dataset
 if not os.path.isdir(basedir.basename):
     basedir.basename = os.path.abspath('data')
 dataset_name = 'papas/ee_to_ZZ_1oct_A_1'
+cfg_name = 'data/analysis_ee_ZH_nunubb_cfg.py'
 dataset_pattern = '*.0_1*.root'
 
 class TestDataset(unittest.TestCase):
 
     def setUp(self):
-        self.dataset = Dataset(dataset_name, dataset_pattern, cache=False)        
+        self.dataset = Dataset(dataset_name, dataset_pattern, cache=False,
+                               cfg=cfg_name)        
 
     def test_1_create(self):
         '''Test dataset creation'''

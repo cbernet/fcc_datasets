@@ -13,7 +13,7 @@ class TestDataset(unittest.TestCase):
 
     def setUp(self):
         self.dataset = Dataset(dataset_name, dataset_pattern, cache=False,
-                               cfg=cfg_name)        
+                               cfg=cfg_name, xsection=1.8e-9)        
 
     def test_1_create(self):
         '''Test dataset creation'''

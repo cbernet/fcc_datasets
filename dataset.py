@@ -63,10 +63,11 @@ class Directory(object):
 class Dataset(Directory):
 
     def __init__(self, name, pattern='*.root', cache=True,
-                 cfg=None):
+                 cfg=None, xsection=None):
         self.name = name
         self._uid = None
         self._versions = None
+        self._xsection = xsection
         if not cache or not self._read_from_cache():
             if self._uid is None:
                 self._uid = uuid.uuid4()
@@ -127,7 +128,7 @@ class Dataset(Directory):
                 'njobs_ok': self.ngoodfiles(),
                 'user': os.environ['USER'],
                 'timestamp': datetime.datetime.now().isoformat(),
-                'xsection': 0.,
+                'xsection': self._xsection,
             }
         }
         if self._versions:

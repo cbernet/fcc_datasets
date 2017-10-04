@@ -5,6 +5,9 @@ import os
 import pprint
 import shelve
 import copy
+import datetime
+import yaml
+import uuid
 from ROOT import TFile
 
 
@@ -41,7 +44,7 @@ class File(object):
             return None
         rootfile = TFile(self.path)
         tree = rootfile.Get("events")
-        return tree.GetEntries()
+        return int(tree.GetEntries())
         
     def __str__(self):
         return '{:<30} : {}'.format(self.name, pprint.pformat(self.flags))
@@ -60,9 +63,12 @@ class Dataset(Directory):
 
     def __init__(self, name, pattern='*.root', cache=True):
         self.name = name
+        self._uid = None
         if cache: 
             self._read_from_cache()
         else:
+            if self._uid is None:
+                self._uid = uuid.uuid4()
             self.path = basedir.abspath(name)
             self.all_files = dict()
             self.good_files = dict()
@@ -76,6 +82,14 @@ class Dataset(Directory):
             if the_file.good():
                 self.good_files[the_file.name] = the_file
         
+    def list_of_good_files(self):
+        return [the_file.path for the_file in self.all_files.values() if the_file.good()]
+
+    #----------------------------------------------------------------------
+    def uid(self):
+        """return unique id"""
+        return self._uid
+
     def nfiles(self):
         '''return the total number of files, good or not'''
         return len(self.all_files)
@@ -83,14 +97,30 @@ class Dataset(Directory):
     def ngoodfiles(self):
         """return the number of good files."""
         return len(self.good_files)
-            
-    def list_of_good_files(self):
-        return [the_file.path for the_file in self.all_files.values() if the_file.good()]
 
     def nevents(self):
         '''Returns the sum of the number of events in all good files'''
         return sum([f.nevents() for f in self.good_files.values()])
 
+    def write_yaml(self):
+        '''write the yaml file'''
+        data = {
+            'sample': {
+                'name': self.name,
+                'id': self.uid(),
+                'nevents': self.nevents(),
+                'njobs': self.nfiles(),
+                'njobs_ok': self.ngoodfiles(),
+                'user': os.environ['USER'],
+                'timestamp': datetime.datetime.now().isoformat(),
+                'xsection': 0.,
+            }
+        }
+        fname = self.abspath('info.yaml')
+        with open(fname, mode='w') as outfile:
+                yaml.dump(data, outfile,
+                          default_flow_style=False)
+            
     def _read_from_cache(self):
         sh = shelve.open(self._cache_fname())
         self.__dict__ = copy.deepcopy(sh['dataset'].__dict__)

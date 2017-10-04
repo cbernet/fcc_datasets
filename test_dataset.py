@@ -10,28 +10,38 @@ dataset_pattern = '*.0_1*.root'
 
 class TestDataset(unittest.TestCase):
 
+    def setUp(self):
+        self.dataset = Dataset(dataset_name, dataset_pattern, cache=False)        
+
     def test_1_create(self):
         '''Test dataset creation'''
-        dataset = Dataset(dataset_name, dataset_pattern, cache=False)
-        self.assertEqual(len(dataset.all_files),11)
-        self.assertEqual(len(dataset.list_of_good_files()),9)
-        self.assertEqual(dataset.nfiles(), 11)
-        self.assertEqual(dataset.ngoodfiles(), 9)
-
+        self.assertEqual(len(self.dataset.all_files),11)
+        self.assertEqual(len(self.dataset.list_of_good_files()),9)
+        self.assertEqual(self.dataset.nfiles(), 11)
+        self.assertEqual(self.dataset.ngoodfiles(), 9)
+        self.dataset.write_yaml()
 
     def test_2_cache(self):
         '''Test dataset reading from cache'''
         dataset = Dataset(dataset_name, dataset_pattern, cache=True)
         self.assertEqual(len(dataset.all_files),11)
         self.assertEqual(len(dataset.list_of_good_files()),9)
+        self.assertEqual(dataset.uid(), self.dataset.uid())
 
     #----------------------------------------------------------------------
     def test_3_nevents(self):
         """Test that the number of events is correct"""
         dataset = Dataset(dataset_name, dataset_pattern, cache=True)
         self.assertEqual(dataset.nevents(), 900000)
-        
 
+    #----------------------------------------------------------------------
+    def test_4_yaml(self):
+        """Test that the yaml file can be written and read."""
+        dataset = Dataset(dataset_name, dataset_pattern, cache=True)
+        dataset.write_yaml()
+        
+        
+        
 ##    def test_3_print(self):
 ##        dataset = Dataset(dataset_name, dataset_pattern, cache=True)
 ##        printout = '''papas/ee_to_ZZ_1oct_A_1

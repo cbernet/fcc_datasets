@@ -67,10 +67,7 @@ class Dataset(Directory):
         self.name = name
         self._uid = None
         self._versions = None
-        if cache: 
-            self._read_from_cache()
-            # TODO : what if cache does not exist? 
-        else:
+        if not cache or not self._read_from_cache():
             if self._uid is None:
                 self._uid = uuid.uuid4()
             if cfg:
@@ -89,6 +86,7 @@ class Dataset(Directory):
         """
         self._versions = Versions(cfgname, ['heppy', 'fcc_ee_higgs']).tracked
 
+    #----------------------------------------------------------------------
     def _build_list_of_files(self, pattern):
         for path in glob.glob(self.abspath(pattern)):
             the_file = File(path)
@@ -96,6 +94,7 @@ class Dataset(Directory):
             if the_file.good():
                 self.good_files[the_file.name] = the_file
         
+    #----------------------------------------------------------------------
     def list_of_good_files(self):
         return [the_file.path for the_file in self.all_files.values() if the_file.good()]
 
@@ -116,6 +115,7 @@ class Dataset(Directory):
         '''Returns the sum of the number of events in all good files'''
         return sum([f.nevents() for f in self.good_files.values()])
 
+    #----------------------------------------------------------------------
     def write_yaml(self):
         '''write the yaml file'''
         data = {
@@ -141,17 +141,24 @@ class Dataset(Directory):
                           default_flow_style=False)
         return data
             
+    #----------------------------------------------------------------------
     def read_yaml(self):
         fname = self.abspath('info.yaml')
         with open(fname, mode='r') as infile:
             data = yaml.load(infile)
             return data
     
+    #----------------------------------------------------------------------
     def _read_from_cache(self):
-        sh = shelve.open(self._cache_fname())
+        fname = self._cache_fname()
+        if not os.path.isfile(fname):
+            return False
+        sh = shelve.open(fname)
         self.__dict__ = copy.deepcopy(sh['dataset'].__dict__)
         sh.close()
+        return True
         
+    #----------------------------------------------------------------------
     def _write_to_cache(self):
         cache = basedir.abscache(self.name)
         if not os.path.isdir(cache):

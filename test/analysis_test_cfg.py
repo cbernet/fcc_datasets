@@ -47,12 +47,11 @@ Collider.SQRTS = 240.
 import fcc_datasets.basedir as basedir
 basedir.basename = os.path.abspath('.')
 from fcc_datasets.dataset import Dataset
-ds = Dataset('papas/ee_to_ZZ_1oct_A_1', cache=True)
+ds = Dataset('papas/ee_to_ZZ_1oct_A_1', cache=False)
 comp = cfg.Component(
     ds.name,
-    files=ds.list_of_good_files()[:1]
+    files=ds.list_of_good_files()
 )
-
 
 comp.splitFactor = len(comp.files)
 selectedComponents = [comp]
@@ -66,14 +65,36 @@ source = cfg.Analyzer(
     gen_vertices = 'Genvertex'
 )
 
-# just to add a dependency to fcc_ee_higgs for
-# testing purpose
-# from fcc_ee_higgs.analyzers.ZHnunubbJetRescaler import ZHnunubbJetRescaler
+from heppy.test.papas_cfg import gen_particles_stable
+
+# Make jets 
+from heppy.analyzers.fcc.JetClusterizer import JetClusterizer
+jets = cfg.Analyzer(
+    JetClusterizer,
+    output = 'jets',
+    particles = 'gen_particles_stable',
+    fastjet_args = dict( njets = 2 ),
+    njets_required=False
+)
+
+from heppy.analyzers.JetTreeProducer import JetTreeProducer
+tree = cfg.Analyzer(
+    JetTreeProducer,
+    tree_name = 'events',
+    tree_title = 'jets',
+    jets = 'jets',
+    njets = 2,
+    taggers=[], 
+    store_match = False    
+)
 
 # definition of a sequence of analyzers,
 # the analyzers will process each event in this order
 sequence = cfg.Sequence(
     source,
+    gen_particles_stable,
+    jets,
+    tree
 )   
 
 # Specifics to read FCC events 

@@ -49,8 +49,8 @@ basedir.basename = os.path.abspath('.')
 from fcc_datasets.dataset import Dataset
 ds = Dataset('papas/ee_to_ZZ_1oct_A_1', cache=True)
 comp = cfg.Component(
-    'ee_to_ZZ_1oct_A_1',
-    files=ds.list_of_good_files()
+    ds.name,
+    files=ds.list_of_good_files()[:1]
 )
 
 

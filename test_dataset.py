@@ -2,6 +2,7 @@ import unittest
 import os
 import basedir
 from dataset import Dataset
+from fcc_component import FCCComponent
 
 if not os.path.isdir(basedir.basename):
     basedir.basename = os.path.abspath('test')
@@ -43,6 +44,20 @@ class TestDataset(unittest.TestCase):
         data_written = dataset.write_yaml()
         data_read = dataset.read_yaml()
         self.assertDictEqual(data_written, data_read)
+        
+        
+class TestFCCComponent(unittest.TestCase):
+    
+    #----------------------------------------------------------------------
+    def test_1(self):
+        """Test FCC component creation"""
+        dataset = Dataset(dataset_name, dataset_pattern, cache=True)
+        comp = FCCComponent(dataset_name, dataset_pattern)
+        self.assertListEqual(dataset.list_of_good_files(),
+                             comp.files)
+        self.assertEqual(dataset._xsection,
+                         comp.xSection)
+        print comp
         
         
         

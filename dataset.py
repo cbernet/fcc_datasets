@@ -185,4 +185,7 @@ class Dataset(Directory):
         files = map(str, self.all_files.values())
         lines.extend(files)
         return '\n'.join(lines)
+    
+    def __repr__(self):
+        return self.name
         

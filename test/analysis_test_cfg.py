@@ -46,14 +46,12 @@ Collider.SQRTS = 240.
 
 import fcc_datasets.basedir as basedir
 basedir.basename = os.path.abspath('.')
-from fcc_datasets.dataset import Dataset
-ds = Dataset('papas/ee_to_ZZ_1oct_A_1', cache=False)
-comp = cfg.Component(
-    ds.name,
-    files=ds.list_of_good_files()
-)
+from fcc_datasets.fcc_component import FCCComponent
+comp = FCCComponent('papas/ee_to_ZZ_1oct_A_1',
+                    cache=False,
+                    splitFactor=1
+                    )   
 
-comp.splitFactor = len(comp.files)
 selectedComponents = [comp]
 
 # read FCC EDM events from the input root file(s)

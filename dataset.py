@@ -92,7 +92,9 @@ class Dataset(Directory):
         get the commit ids of the relevant imported packages
         possibly find the mother sample(s)? 
         """
-        self._versions = Versions(cfgname, ['heppy', 'fcc_ee_higgs']).tracked
+        self._versions = Versions(cfgname, ['heppy',
+                                            'fcc_ee_higgs',
+                                            'fcc_datasets']).tracked
 
     #----------------------------------------------------------------------
     def _guess_jobtype(self):

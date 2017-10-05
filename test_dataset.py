@@ -6,7 +6,7 @@ from dataset import Dataset
 if not os.path.isdir(basedir.basename):
     basedir.basename = os.path.abspath('data')
 dataset_name = 'papas/ee_to_ZZ_1oct_A_1'
-cfg_name = 'data/analysis_ee_ZH_nunubb_cfg.py'
+cfg_name = 'data/analysis_test_cfg.py'
 dataset_pattern = '*.0_1*.root'
 
 class TestDataset(unittest.TestCase):

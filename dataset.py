@@ -74,6 +74,8 @@ class Dataset(Directory):
             if cfg:
                 self._analyze_cfg(cfg)
             self.path = basedir.abspath(name)
+            if not os.path.isdir(self.path):
+                raise ValueError('{} does not exist, check your base sample directory'.format(self.path))
             self.all_files = dict()
             self.good_files = dict()
             self._build_list_of_files(pattern)
@@ -155,8 +157,13 @@ class Dataset(Directory):
         if not os.path.isfile(fname):
             return False
         sh = shelve.open(fname)
-        self.__dict__ = copy.deepcopy(sh['dataset'].__dict__)
-        sh.close()
+        try:
+            dataset = sh['dataset']
+            self.__dict__ = copy.deepcopy(dataset.__dict__)
+        except ImportError as err:
+            raise
+        finally:
+            sh.close()
         return True
         
     #----------------------------------------------------------------------

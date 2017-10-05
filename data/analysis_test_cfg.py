@@ -44,11 +44,17 @@ from heppy.configuration import Collider
 Collider.BEAMS = 'ee'
 Collider.SQRTS = 240.
 
-import glob
+import fcc_datasets.basedir as basedir
+basedir.basename = os.path.abspath('.')
+from fcc_datasets.dataset import Dataset
+ds = Dataset('papas/ee_to_ZZ_1oct_A_1', cache=True)
 comp = cfg.Component(
-    'papas_test',
-    files=glob.glob('papas/ee_to_ZZ_1oct_A_1/*.root')
+    'ee_to_ZZ_1oct_A_1',
+    files=ds.list_of_good_files()
 )
+
+
+comp.splitFactor = len(comp.files)
 selectedComponents = [comp]
 
 # read FCC EDM events from the input root file(s)
@@ -57,12 +63,12 @@ from heppy.analyzers.fcc.Reader import Reader
 source = cfg.Analyzer(
     Reader,
     gen_particles = 'GenParticle',
-    gen_vertices = 'GenVertex'
+    gen_vertices = 'Genvertex'
 )
 
 # just to add a dependency to fcc_ee_higgs for
 # testing purpose
-from fcc_ee_higgs.analyzers.ZHnunubbJetRescaler import ZHnunubbJetRescaler
+# from fcc_ee_higgs.analyzers.ZHnunubbJetRescaler import ZHnunubbJetRescaler
 
 # definition of a sequence of analyzers,
 # the analyzers will process each event in this order

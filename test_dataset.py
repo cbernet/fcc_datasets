@@ -25,7 +25,6 @@ class TestFccswDataset(unittest.TestCase):
         self.assertEqual(len(self.dataset.list_of_good_files()),9)
         self.assertEqual(self.dataset.nfiles(), 11)
         self.assertEqual(self.dataset.ngoodfiles(), 9)
-        self.dataset.write_yaml()
 
     def test_2_cache(self):
         '''Test dataset reading from cache'''
@@ -93,7 +92,7 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_5_jobtype_heppy(self):
         """test that the jobtype can be determined for heppy"""
-        dataset = Dataset(dataset_name_fccsw, dataset_pattern_heppy, cache=False)
+        dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy, cache=True)
         self.assertEqual(dataset._jobtype, 'heppy')
     
         

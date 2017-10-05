@@ -9,6 +9,7 @@ import copy
 import datetime
 import yaml
 import uuid
+import re
 from ROOT import TFile
 
 
@@ -68,6 +69,7 @@ class Dataset(Directory):
         self._uid = None
         self._versions = None
         self._xsection = xsection
+        self._jobtype = None
         if not cache or not self._read_from_cache():
             if self._uid is None:
                 self._uid = uuid.uuid4()
@@ -78,8 +80,11 @@ class Dataset(Directory):
                 raise ValueError('{} does not exist, check your base sample directory'.format(self.path))
             self.all_files = dict()
             self.good_files = dict()
+            # self._guess_jobtype()
             self._build_list_of_files(pattern)
+            self._jobtype = self._guess_jobtype()
             self._write_to_cache()
+            self.write_yaml()
 
     #----------------------------------------------------------------------
     def _analyze_cfg(self, cfgname):
@@ -88,6 +93,32 @@ class Dataset(Directory):
         possibly find the mother sample(s)? 
         """
         self._versions = Versions(cfgname, ['heppy', 'fcc_ee_higgs']).tracked
+
+    #----------------------------------------------------------------------
+    def _guess_jobtype(self):
+        pattern = re.compile('(\S*\D)(\d+)\.root$')
+        indices = []
+        prefix = []
+        for fname in self.list_of_good_files():
+            fname = os.path.basename(fname)
+            m = pattern.match(fname)
+            if m:
+                prefix.append(m.group(1))
+                indices.append(int(m.group(2)))
+        if len(set(prefix)) == 1 and len(indices):
+            #same prefix, several indices
+            return 'fccsw'
+        elif len(indices) == 0:
+            return 'heppy'
+        return None            
+##    #----------------------------------------------------------------------
+##    def _guess_jobtype(self):
+##        """returns 'fcssw', 'fcc-pythia8-generate', 'heppy'"""
+##        root_files = glob.glob(self.abspath('*.root'))
+##        #typical job numbering pattern:
+##        pattern = re.compile('\S*{\d}\S*\.root')
+##        for files in root_files:
+##            m = pattern.match()
 
     #----------------------------------------------------------------------
     def _build_list_of_files(self, pattern):
@@ -118,6 +149,12 @@ class Dataset(Directory):
         '''Returns the sum of the number of events in all good files'''
         return sum([f.nevents() for f in self.good_files.values()])
 
+    def jobtype(self):
+        '''Returns the type of jobs used to produce the dataset:
+        "fcssw", "heppy", None
+        '''
+        return self._jobtype
+
     #----------------------------------------------------------------------
     def write_yaml(self):
         '''write the yaml file'''
@@ -125,6 +162,7 @@ class Dataset(Directory):
             'sample': {
                 'name': self.name,
                 'id': self.uid(),
+                'jobtype': self.jobtype(),
                 'nevents': self.nevents(),
                 'njobs': self.nfiles(),
                 'njobs_ok': self.ngoodfiles(),

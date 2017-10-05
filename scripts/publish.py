@@ -1,9 +1,15 @@
 from fcc_datasets.dataset import Dataset
 import fcc_datasets.basedir as basedir
 
-def process_dataset(dsname, wildcard):
-    ds = Dataset(dsname, wildcard, cache=False)
-    print ds
+def process_dataset(dsname, options):
+    ds = Dataset(dsname,
+                 pattern=options.wildcard,
+                 xsection=options.xsection, 
+                 cache=False)
+    if options.verbose:
+        print ds
+    else:
+        print dsname
 
 if __name__ == '__main__':
     
@@ -26,6 +32,17 @@ if __name__ == '__main__':
         default=basedir.basename,
         help="base directory containing all samples."
     )    
+    parser.add_option(
+        "-v","--verbose", dest="verbose",
+        default=False,
+        action="store_true", 
+        help="base directory containing all samples."
+    )    
+    parser.add_option(
+        "-x","--xsection", dest="xsection", type=float, 
+        default=None,
+        help="cross section to be assigned to the sample."
+    )    
     (options,args) = parser.parse_args()
     
     if len(args) != 1:
@@ -35,4 +52,4 @@ if __name__ == '__main__':
     dsname = sys.argv[1]
     basedir.basename = options.basedir
     
-    process_dataset(dsname, options.wildcard)
+    process_dataset(dsname, options)

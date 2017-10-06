@@ -50,7 +50,7 @@ basedir.basename = os.path.abspath('.')
 
 from fcc_datasets.fcc_component import FCCComponent
 comp = FCCComponent(
-    'papas/ee_to_ZZ_1oct_A_1',
+    'papas/ee_to_ZZ_condor_A_703',
     cache=False,
     splitFactor=1
 )   
@@ -63,7 +63,7 @@ from heppy.analyzers.fcc.Reader import Reader
 source = cfg.Analyzer(
     Reader,
     gen_particles = 'GenParticle',
-    gen_vertices = 'Genvertex'
+    gen_vertices = 'GenVertex'
 )
 
 from heppy.test.papas_cfg import gen_particles_stable

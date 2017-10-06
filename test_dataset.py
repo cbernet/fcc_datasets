@@ -1,43 +1,48 @@
 import unittest
 import os
 import basedir
+
+basedir.basename = os.path.abspath('test')
+basedir.basecache = os.path.abspath('test/.fcc_datasets') 
+dataset_name_fccsw = 'papas/ee_to_ZZ_condor_A_703'
+dataset_name_heppy = 'heppy/ee_to_ZZ_1oct_A_1'
+cfg_name = 'test/analysis_test_cfg.py'
+dataset_pattern_fccsw = '*.root'
+dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_tree.root'
+
 from dataset import Dataset
 from fcc_component import FCCComponent
 
-if not os.path.isdir(basedir.basename):
-    basedir.basename = os.path.abspath('test')
-dataset_name_fccsw = 'papas/ee_to_ZZ_1oct_A_1'
-dataset_name_heppy = 'heppy/ee_to_ZZ_1oct_A_1'
-cfg_name = 'test/analysis_test_cfg.py'
-dataset_pattern_fccsw = '*.0_1*.root'
-dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_tree.root'
 
 class TestFccswDataset(unittest.TestCase):
 
     def setUp(self):
         self.dataset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
                                cache=False,
-                               xsection=1.8e-9)        
+                               xsection=1.8e-9)
+        self.nfiles = 10
+        self.ngoodfiles = 10
+        self.nevents = 10
 
     def test_1_create(self):
         '''Test dataset creation'''
-        self.assertEqual(len(self.dataset.all_files),11)
-        self.assertEqual(len(self.dataset.list_of_good_files()),9)
-        self.assertEqual(self.dataset.nfiles(), 11)
-        self.assertEqual(self.dataset.ngoodfiles(), 9)
+        self.assertEqual(len(self.dataset.all_files), self.nfiles)
+        self.assertEqual(len(self.dataset.list_of_good_files()), self.ngoodfiles)
+        self.assertEqual(self.dataset.nfiles(), self.nfiles)
+        self.assertEqual(self.dataset.ngoodfiles(), self.ngoodfiles)
 
     def test_2_cache(self):
         '''Test dataset reading from cache'''
         dataset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw, cache=True)
-        self.assertEqual(len(dataset.all_files),11)
-        self.assertEqual(len(dataset.list_of_good_files()),9)
+        self.assertEqual(len(dataset.all_files), self.nfiles)
+        self.assertEqual(len(dataset.list_of_good_files()), self.ngoodfiles)
         self.assertEqual(dataset.uid(), self.dataset.uid())
 
     #----------------------------------------------------------------------
     def test_3_nevents(self):
         """Test that the number of events is correct"""
         dataset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw, cache=True)
-        self.assertEqual(dataset.nevents(), 900000)
+        self.assertEqual(dataset.nevents(), 100)
 
     #----------------------------------------------------------------------
     def test_4_yaml(self):

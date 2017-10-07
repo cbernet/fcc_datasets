@@ -1,6 +1,6 @@
 import unittest
 
-scriptfname = 'data/analysis_ee_ZH_nunubb_cfg.py'
+scriptfname = 'test/analysis_test_cfg.py'
 from versions import Versions
 
 ########################################################################

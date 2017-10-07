@@ -11,6 +11,6 @@ class FCCComponent(cfg.MCComponent):
         super(FCCComponent, self).__init__(
             self.dataset.name,
             self.dataset.list_of_good_files(),
-            xSection=self.dataset._xsection, 
+            xSection=self.dataset.xsection(), 
             **kwargs
         )

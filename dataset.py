@@ -63,14 +63,16 @@ class Directory(object):
 
 class Dataset(Directory):
 
-    def __init__(self, name, pattern='*.root', cache=True,
+    def __init__(self, name, pattern=None, cache=True,
                  cfg=None, xsection=None):
         self.name = name
         self._uid = None
         self._versions = None
-        self._xsection = xsection
         self._jobtype = None
-        if not cache or not self._read_from_cache():
+        change_requested = pattern or cfg or xsection or not cache
+        if not self._read_from_cache() or \
+           change_requested:
+            self._xsection = xsection
             if self._uid is None:
                 self._uid = uuid.uuid4()
             if cfg:
@@ -80,7 +82,8 @@ class Dataset(Directory):
                 raise ValueError('{} does not exist, check your base sample directory'.format(self.path))
             self.all_files = dict()
             self.good_files = dict()
-            # self._guess_jobtype()
+            if pattern is None:
+                pattern = '*.root'
             self._build_list_of_files(pattern)
             self._jobtype = self._guess_jobtype()
             self._write_to_cache()
@@ -156,6 +159,10 @@ class Dataset(Directory):
         "fcssw", "heppy", None
         '''
         return self._jobtype
+    
+    def xsection(self):
+        '''Returns the cross-section'''
+        return self._xsection
 
     #----------------------------------------------------------------------
     def write_yaml(self):

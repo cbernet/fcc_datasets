@@ -53,7 +53,8 @@ comp = FCCComponent(
     'papas/ee_to_ZZ_condor_A_703',
     cache=False,
     splitFactor=1
-)   
+)
+#comp.splitFactor = len(comp.files)
 
 selectedComponents = [comp]
 

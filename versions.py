@@ -1,5 +1,6 @@
 import modulefinder
 import git
+import yaml
 import sys
 import fnmatch
 import pprint
@@ -33,7 +34,19 @@ class Versions(object):
         info['commitid'] = repo.head.commit.hexsha
         self.tracked[key] = info
         print
-    
+        
+    #----------------------------------------------------------------------
+    def write_yaml(self, path):
+        '''write the versions to a yaml file'''
+        data = dict(software=dict())
+        # now only one information, the commit id.
+        # so simplifying the dictionary structure
+        for package, info in self.tracked.iteritems():
+            data['software'][package] = info['commitid']
+        with open(path, mode='w') as outfile:
+                yaml.dump(data, outfile,
+                          default_flow_style=False)    
+
     def __str__(self):
         return pprint.pformat(self.tracked)
     

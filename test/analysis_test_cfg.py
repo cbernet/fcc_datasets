@@ -46,7 +46,6 @@ Collider.SQRTS = 240.
 
 # setting the base path for samples here, for testing
 import fcc_datasets.basedir as basedir
-basedir.basename = os.path.abspath('.')
 
 from fcc_datasets.fcc_component import FCCComponent
 comp = FCCComponent(

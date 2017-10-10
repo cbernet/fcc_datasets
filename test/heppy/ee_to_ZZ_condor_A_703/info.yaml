@@ -1,14 +1,14 @@
 sample:
   id: !!python/object:uuid.UUID
-    int: 103809711469727537531424236203413427210
+    int: 103722898375392119821400203655267308549
   jobtype: heppy
   name: heppy/ee_to_ZZ_condor_A_703
   nevents: 100
   njobs: 1
   njobs_ok: 1
-  timestamp: '2017-10-07T10:01:41.794941'
+  timestamp: '2017-10-10T10:13:52.796524'
   user: cbernet
   xsection: 1.8e-09
 software:
-  fcc_datasets: 90ae5a1f400741c693bea90a80c3846d7e690391
-  heppy: f5ad699db06919eccbbb071608d67086645cbecb
+  fcc_datasets: 73ea55455ee9d877ae7fc18a5bc22e197554cece
+  heppy: 056bba3e638d147adfaca9d88125f15bbdfce1b7

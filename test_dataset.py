@@ -10,8 +10,8 @@ cfg_name = 'test/analysis_test_cfg.py'
 dataset_pattern_fccsw = '*.root'
 dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_tree.root'
 
-from dataset import Dataset
-from fcc_component import FCCComponent
+from fcc_datasets.dataset import Dataset
+from fcc_datasets.fcc_component import FCCComponent
 
 
 class TestFccswDataset(unittest.TestCase):
@@ -119,12 +119,12 @@ class TestFCCComponent(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_1(self):
         """Test FCC component creation"""
-        dataset = Dataset(dataset_name_fccsw, cache=True)
+        dset = Dataset(dataset_name_fccsw, cache=True)
         comp = FCCComponent(dataset_name_fccsw, dataset_pattern_fccsw,
-                            xsection=dataset.xsection())
-        self.assertListEqual(dataset.list_of_good_files(),
+                            xsection=dset.xsection())
+        self.assertListEqual(dset.list_of_good_files(),
                              comp.files)
-        self.assertEqual(dataset.xsection(),
+        self.assertEqual(dset.xsection(),
                          comp.xSection)
         print comp
         

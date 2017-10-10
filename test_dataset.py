@@ -8,7 +8,7 @@ import basedir
 def abspath(name):
     return '/'.join([basedir.basename, name])
 dataset_name_fccsw = 'papas/ee_to_ZZ_condor_A_703'
-dataset_name_heppy = 'heppy/ee_to_ZZ_condor_A_703'
+dataset_name_heppy = 'heppy/papas/ee_to_ZZ_condor_A_703'
 cfg_name = abspath('analysis_test_cfg.py')
 dataset_pattern_fccsw = '*.root'
 dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_tree.root'

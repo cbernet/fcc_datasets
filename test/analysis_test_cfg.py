@@ -53,7 +53,7 @@ comp = FCCComponent(
     cache=False,
     splitFactor=1
 )
-#comp.splitFactor = len(comp.files)
+comp.splitFactor = len(comp.files)
 
 selectedComponents = [comp]
 

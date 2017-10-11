@@ -6,8 +6,8 @@ sample:
   nevents: 0
   njobs: 0
   njobs_ok: 0
-  timestamp: '2017-10-11T14:26:53.045697'
+  timestamp: '2017-10-11T17:12:10.116580'
   user: cbernet
-  xsection: 1234.0
+  xsection: null
 software:
   heppy: !!python/unicode '1daf2b91a3ebafcd9184344636e48a429f8eacc5'

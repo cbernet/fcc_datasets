@@ -4,6 +4,7 @@ from versions import Versions
 import glob
 import os
 import pprint
+import pickle
 import shelve
 import copy
 import datetime
@@ -68,6 +69,7 @@ class Dataset(Directory):
         super(Dataset, self).__init__(name)
         self.name = name
         self._uid = None
+        self._mother = None
         self._versions = None
         self._jobtype = None
         self._data = dict()
@@ -88,6 +90,7 @@ class Dataset(Directory):
                 pattern = '*.root'
             self._build_list_of_files(pattern)
             self._jobtype = self._guess_jobtype()
+            self._find_mother()
             self._aggregate_yaml()
             self._write_to_cache()
             self.write_yaml()
@@ -128,6 +131,19 @@ class Dataset(Directory):
 ##        for files in root_files:
 ##            m = pattern.match()
 
+
+    #----------------------------------------------------------------------
+    def _find_mother(self):
+        """find the mother dataset and store its name in _mother"""
+        if self._jobtype == 'heppy':
+            # load config from pickle file and get the mother from the input component
+            with open(self.abspath('config.pck')) as config_file:
+                config = pickle.load(config_file)
+                comps = config.components
+                assert(len(comps) == 1)
+                mother_name = comps[0].name.split('_Chunk')[0]
+                self._mother = mother_name
+                
 
     #----------------------------------------------------------------------
     def _aggregate_yaml(self):
@@ -182,6 +198,10 @@ class Dataset(Directory):
         '''Returns the cross-section'''
         return self._xsection
 
+    def mother(self):
+        '''Returns the mother'''
+        return self._mother
+
     #----------------------------------------------------------------------
     def write_yaml(self):
         '''write the yaml file'''
@@ -189,6 +209,7 @@ class Dataset(Directory):
             'name': self.name,
             'id': self.uid(),
             'jobtype': self.jobtype(),
+            'mother' : self.mother(),
             'nevents': self.nevents(),
             'njobs': self.nfiles(),
             'njobs_ok': self.ngoodfiles(),

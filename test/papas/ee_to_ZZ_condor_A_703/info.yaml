@@ -1,11 +1,11 @@
 sample:
   id: !!python/object:uuid.UUID
-    int: 249067888459185546160721477310587650395
+    int: 119598373806223881451537052450390182568
   jobtype: fccsw
   name: papas/ee_to_ZZ_condor_A_703
   nevents: 100
   njobs: 10
   njobs_ok: 10
-  timestamp: '2017-10-10T10:54:27.652753'
+  timestamp: '2017-10-11T13:58:43.661666'
   user: cbernet
   xsection: 1

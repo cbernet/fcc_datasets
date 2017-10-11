@@ -54,8 +54,8 @@ class File(object):
 
 class Directory(object):
 
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, name):
+        self.path = basedir.abspath(name)
 
     def abspath(self, fname):
         return '/'.join([self.path, fname])
@@ -65,10 +65,13 @@ class Dataset(Directory):
 
     def __init__(self, name, pattern=None, cache=True,
                  cfg=None, xsection=None):
+        super(Dataset, self).__init__(name)
         self.name = name
         self._uid = None
         self._versions = None
         self._jobtype = None
+        self._data = dict()
+        self._info_fname = self.abspath('info.yaml')
         change_requested = pattern or cfg or xsection or not cache
         if not self._read_from_cache() or \
            change_requested:
@@ -77,7 +80,6 @@ class Dataset(Directory):
                 self._uid = uuid.uuid4()
             if cfg:
                 self._analyze_cfg(cfg)
-            self.path = basedir.abspath(name)
             if not os.path.isdir(self.path):
                 raise ValueError('{} does not exist, check your base sample directory'.format(self.path))
             self.all_files = dict()
@@ -86,6 +88,7 @@ class Dataset(Directory):
                 pattern = '*.root'
             self._build_list_of_files(pattern)
             self._jobtype = self._guess_jobtype()
+            self._aggregate_yaml()
             self._write_to_cache()
             self.write_yaml()
 
@@ -124,6 +127,21 @@ class Dataset(Directory):
 ##        pattern = re.compile('\S*{\d}\S*\.root')
 ##        for files in root_files:
 ##            m = pattern.match()
+
+
+    #----------------------------------------------------------------------
+    def _aggregate_yaml(self):
+        """Retrieve info from existing yaml files in the dataset directory.
+        Do not consider the main yaml file of the dataset in case it
+        already exists. 
+        """
+        yaml_files = glob.glob(self.abspath('*.yaml'))
+        for yfile in yaml_files:
+            if yfile == self._info_fname:
+                continue
+            data = self._read_yaml(yfile)
+            self._data.update(data)
+        
 
     #----------------------------------------------------------------------
     def _build_list_of_files(self, pattern):
@@ -167,33 +185,31 @@ class Dataset(Directory):
     #----------------------------------------------------------------------
     def write_yaml(self):
         '''write the yaml file'''
-        data = {
-            'sample': {
-                'name': self.name,
-                'id': self.uid(),
-                'jobtype': self.jobtype(),
-                'nevents': self.nevents(),
-                'njobs': self.nfiles(),
-                'njobs_ok': self.ngoodfiles(),
-                'user': os.environ['USER'],
-                'timestamp': datetime.datetime.now().isoformat(),
-                'xsection': self._xsection,
-            }
+        self._data['sample'] = {
+            'name': self.name,
+            'id': self.uid(),
+            'jobtype': self.jobtype(),
+            'nevents': self.nevents(),
+            'njobs': self.nfiles(),
+            'njobs_ok': self.ngoodfiles(),
+            'user': os.environ['USER'],
+            'timestamp': datetime.datetime.now().isoformat(),
+            'xsection': self._xsection,
         }
-        if self._versions:
-            software_data = dict()
-            for key, info in self._versions.iteritems():
-                software_data[key] = str(info['commitid'])
-            data['software'] = software_data
-        fname = self.abspath('info.yaml')
-        with open(fname, mode='w') as outfile:
-                yaml.dump(data, outfile,
+##        if self._versions:
+##            software_data = dict()
+##            for key, info in self._versions.iteritems():
+##                software_data[key] = str(info['commitid'])
+##            self.data['software'] = software_data
+        with open(self._info_fname, mode='w') as outfile:
+                yaml.dump(self._data, outfile,
                           default_flow_style=False)
-        return data
+        return self._data
             
     #----------------------------------------------------------------------
-    def read_yaml(self):
-        fname = self.abspath('info.yaml')
+    def _read_yaml(self, fname=None):
+        if fname is None:
+            fname = self._info_fname
         with open(fname, mode='r') as infile:
             data = yaml.load(infile)
             return data
@@ -206,7 +222,8 @@ class Dataset(Directory):
         sh = shelve.open(fname)
         try:
             dataset = sh['dataset']
-            self.__dict__ = copy.deepcopy(dataset.__dict__)
+            # self.__dict__ = copy.deepcopy(dataset.__dict__)
+            self.__dict__.update(dataset.__dict__)
         except ImportError as err:
             raise
         finally:

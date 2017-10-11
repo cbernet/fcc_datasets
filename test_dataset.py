@@ -16,6 +16,7 @@ dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_t
 from fcc_datasets.dataset import Dataset
 from fcc_datasets.fcc_component import FCCComponent
 
+cache = False
 
 class TestFccswDataset(unittest.TestCase):
 
@@ -36,7 +37,7 @@ class TestFccswDataset(unittest.TestCase):
 
     def test_2_cache(self):
         '''Test dataset reading from cache'''
-        dataset = Dataset(dataset_name_fccsw, cache=True)
+        dataset = Dataset(dataset_name_fccsw, cache=cache)
         self.assertEqual(len(dataset.all_files), self.nfiles)
         self.assertEqual(len(dataset.list_of_good_files()), self.ngoodfiles)
         self.assertEqual(dataset.uid(), self.dataset.uid())
@@ -44,21 +45,21 @@ class TestFccswDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_3_nevents(self):
         """Test that the number of events is correct"""
-        dataset = Dataset(dataset_name_fccsw, cache=True)
+        dataset = Dataset(dataset_name_fccsw, cache=cache)
         self.assertEqual(dataset.nevents(), 100)
 
     #----------------------------------------------------------------------
     def test_4_yaml(self):
         """Test that the yaml file can be written and read."""
-        dataset = Dataset(dataset_name_fccsw, cache=True)
+        dataset = Dataset(dataset_name_fccsw, cache=cache)
         data_written = dataset.write_yaml()
-        data_read = dataset.read_yaml()
+        data_read = dataset._read_yaml()
         self.assertDictEqual(data_written, data_read)
         
     #----------------------------------------------------------------------
     def test_5_jobtype_fccsw(self):
         """test that the jobtype can be determined for fccsw"""
-        dataset = Dataset(dataset_name_fccsw, cache=True)
+        dataset = Dataset(dataset_name_fccsw, cache=cache)
         self.assertEqual(dataset._jobtype, 'fccsw')
 
     #----------------------------------------------------------------------
@@ -105,15 +106,15 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_4_yaml(self):
         """Test that the yaml file can be written and read."""
-        dataset = Dataset(dataset_name_heppy, cache=True)
+        dataset = Dataset(dataset_name_heppy, cache=cache)
         data_written = dataset.write_yaml()
-        data_read = dataset.read_yaml()
+        data_read = dataset._read_yaml()
         self.assertDictEqual(data_written, data_read)
         
     #----------------------------------------------------------------------
     def test_5_jobtype_heppy(self):
         """test that the jobtype can be determined for heppy"""
-        dataset = Dataset(dataset_name_heppy, cache=True)
+        dataset = Dataset(dataset_name_heppy, cache=cache)
         self.assertEqual(dataset._jobtype, 'heppy')
     
         
@@ -122,7 +123,7 @@ class TestFCCComponent(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_1(self):
         """Test FCC component creation"""
-        dset = Dataset(dataset_name_fccsw, cache=True)
+        dset = Dataset(dataset_name_fccsw, cache=cache)
         comp = FCCComponent(dataset_name_fccsw, dataset_pattern_fccsw,
                             xsection=dset.xsection())
         self.assertListEqual(dset.list_of_good_files(),
@@ -135,7 +136,7 @@ class TestFCCComponent(unittest.TestCase):
         
         
 ##    def test_3_print(self):
-##        dataset = Dataset(dataset_name, dataset_pattern, cache=True)
+##        dataset = Dataset(dataset_name, dataset_pattern, cache=cache)
 ##        printout = '''papas/ee_to_ZZ_1oct_A_1
 ##/eos/experiment/fcc/ee/datasets/papas/ee_to_ZZ_1oct_A_1
 ##papasout_2.0_15.root           : {'good': True, 'n_events': 100000L, 'zero_size': False}

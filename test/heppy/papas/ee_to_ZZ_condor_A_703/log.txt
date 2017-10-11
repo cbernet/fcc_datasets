@@ -1,0 +1,46 @@
+
+FCCComponent: papas/ee_to_ZZ_condor_A_703
+	addWeight      :   1.0
+	dataset        :   papas/ee_to_ZZ_condor_A_703
+/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703
+papasout_2.0_8.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_2.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_5.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_1.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_7.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_6.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_9.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_3.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_4.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+papasout_2.0_0.root            : {'good': True, 'n_events': 10, 'zero_size': False}
+	dataset_entries:   0
+	effCorrFactor  :   1
+	files          :   ['/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_8.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_2.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_5.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_1.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_7.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_6.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_9.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_3.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_4.root', '/Users/cbernet/Code/FCC_0.8.1/fcc_datasets/test/papas/ee_to_ZZ_condor_A_703/papasout_2.0_0.root']
+	intLumi        :   1.0
+	isData         :   False
+	isEmbed        :   False
+	isMC           :   True
+	nGenEvents     :   None
+	splitFactor    :   1
+	tree_name      :   None
+	triggers       :   []
+	xSection       :   None
+
+
+      ---- TimeReport (all times in ms; first evt is skipped) ---- 
+processed    all evts    time/proc    time/all   [%]    analyer
+---------    --------    ---------   ---------  -----   -------------
+      100         100         9.52        9.52  82.3%   heppy.analyzers.fcc.Reader.Reader_1
+      100         100         0.13        0.13   1.1%   heppy.analyzers.Selector.Selector_1
+      100         100         1.57        1.57  13.6%   heppy.analyzers.fcc.JetClusterizer.JetClusterizer_1
+      100         100         0.35        0.35   3.0%   heppy.analyzers.JetTreeProducer.JetTreeProducer_1
+---------    --------    ---------   ---------   -------------
+      100         100        11.57       11.57 100.0%   TOTAL
+
+Counter analyzers :
+	 heppy.analyzers.fcc.Reader.Reader_1                                100 	 1.00 	 1.0000
+	 heppy.analyzers.Selector.Selector_1                                100 	 1.00 	 1.0000
+	 heppy.analyzers.fcc.JetClusterizer.JetClusterizer_1                100 	 1.00 	 1.0000
+	 heppy.analyzers.JetTreeProducer.JetTreeProducer_1                  100 	 1.00 	 1.0000
+
+number of events processed: 100

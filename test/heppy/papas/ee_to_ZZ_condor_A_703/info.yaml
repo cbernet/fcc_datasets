@@ -1,0 +1,13 @@
+sample:
+  id: !!python/object:uuid.UUID
+    int: 173384983252783980525387823372313024370
+  jobtype: heppy
+  name: heppy/papas/ee_to_ZZ_condor_A_703
+  nevents: 0
+  njobs: 0
+  njobs_ok: 0
+  timestamp: '2017-10-11T14:26:53.045697'
+  user: cbernet
+  xsection: 1234.0
+software:
+  heppy: !!python/unicode '1daf2b91a3ebafcd9184344636e48a429f8eacc5'

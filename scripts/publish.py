@@ -1,3 +1,6 @@
+import ROOT
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+
 from fcc_datasets.dataset import Dataset
 import fcc_datasets.basedir as basedir
 

@@ -6,6 +6,6 @@ sample:
   nevents: 100
   njobs: 10
   njobs_ok: 10
-  timestamp: '2017-10-11T13:58:43.661666'
+  timestamp: '2017-10-11T14:20:13.978094'
   user: cbernet
-  xsection: 1
+  xsection: null

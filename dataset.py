@@ -172,7 +172,11 @@ class Dataset(Directory):
         
     #----------------------------------------------------------------------
     def list_of_good_files(self):
-        return [the_file.path for the_file in self.all_files.values() if the_file.good()]
+        good_files = []
+        for key, the_file in sorted(self.all_files.iteritems()):
+            if the_file.good():
+                good_files.append(the_file.path) 
+        return good_files
 
     #----------------------------------------------------------------------
     def uid(self):

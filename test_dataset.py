@@ -1,5 +1,6 @@
 import unittest
 import os
+
 import basedir
 
 # basedir.basename = os.path.abspath('test')
@@ -106,7 +107,8 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_4_yaml(self):
         """Test that the yaml file can be written and read."""
-        dataset = Dataset(dataset_name_heppy, cache=cache)
+        dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy, 
+                          cache=cache)
         data_written = dataset.write_yaml()
         data_read = dataset._read_yaml()
         self.assertDictEqual(data_written, data_read)
@@ -114,7 +116,8 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_5_jobtype_heppy(self):
         """test that the jobtype can be determined for heppy"""
-        dataset = Dataset(dataset_name_heppy, cache=cache)
+        dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy, 
+                          cache=cache)
         self.assertEqual(dataset._jobtype, 'heppy')
     
         

@@ -1,5 +1,6 @@
 import unittest
 import os
+
 import basedir
 
 # basedir.basename = os.path.abspath('test')
@@ -71,7 +72,18 @@ class TestFccswDataset(unittest.TestCase):
         self.assertEqual(dataset.xsection(), 1)
         dataset = Dataset(dataset_name_fccsw, cache=True)
         self.assertEqual(dataset.xsection(), 1)
-         
+    
+    def test_empty(self):
+        """Check that an exception is raised when trying to
+        read a dataset with no root file"""
+        with self.assertRaises(ValueError):
+            dataset = Dataset('papas/empty_dataset')
+    
+    def test_no_good_root_file(self):
+        with self.assertRaises(ValueError):
+            dataset = Dataset('papas/nogood_dataset')
+        
+    
         
 class TestHeppyDataset(unittest.TestCase):
     
@@ -106,7 +118,8 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_4_yaml(self):
         """Test that the yaml file can be written and read."""
-        dataset = Dataset(dataset_name_heppy, cache=cache)
+        dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy, 
+                          cache=cache)
         data_written = dataset.write_yaml()
         data_read = dataset._read_yaml()
         self.assertDictEqual(data_written, data_read)
@@ -114,7 +127,8 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_5_jobtype_heppy(self):
         """test that the jobtype can be determined for heppy"""
-        dataset = Dataset(dataset_name_heppy, cache=cache)
+        dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy, 
+                          cache=cache)
         self.assertEqual(dataset._jobtype, 'heppy')
     
         

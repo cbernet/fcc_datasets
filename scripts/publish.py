@@ -52,7 +52,7 @@ if __name__ == '__main__':
         parser.print_usage()
         sys.exit(1)
         
-    dsname = sys.argv[1]
+    dsname = args[0]
     basedir.basename = options.basedir
     
     process_dataset(dsname, options)

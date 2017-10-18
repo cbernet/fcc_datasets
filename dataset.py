@@ -161,15 +161,24 @@ class Dataset(Directory):
 
     #----------------------------------------------------------------------
     def _build_list_of_files(self, pattern):
-        for path in glob.glob(self.abspath(pattern)):
+        abspattern = self.abspath(pattern)
+        for path in glob.glob(abspattern):
             the_file = File(path)
             self.all_files[the_file.name] = the_file
             if the_file.good():
                 self.good_files[the_file.name] = the_file
+        if len(self.all_files) == 0:
+            raise ValueError('no file matching {}'.format(abspattern))
+        if len(self.good_files) == 0:
+            raise ValueError('no good root file matching {}'.format(abspattern))
         
     #----------------------------------------------------------------------
     def list_of_good_files(self):
-        return [the_file.path for the_file in self.all_files.values() if the_file.good()]
+        good_files = []
+        for key, the_file in sorted(self.all_files.iteritems()):
+            if the_file.good():
+                good_files.append(the_file.path) 
+        return good_files
 
     #----------------------------------------------------------------------
     def uid(self):
@@ -222,6 +231,10 @@ class Dataset(Directory):
 ##            for key, info in self._versions.iteritems():
 ##                software_data[key] = str(info['commitid'])
 ##            self.data['software'] = software_data
+        if os.path.isfile(self._info_fname):
+            with open(self._info_fname) as infile:
+                old_data = yaml.load(infile)
+                
         with open(self._info_fname, mode='w') as outfile:
                 yaml.dump(self._data, outfile,
                           default_flow_style=False)

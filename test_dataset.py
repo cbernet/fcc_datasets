@@ -72,7 +72,18 @@ class TestFccswDataset(unittest.TestCase):
         self.assertEqual(dataset.xsection(), 1)
         dataset = Dataset(dataset_name_fccsw, cache=True)
         self.assertEqual(dataset.xsection(), 1)
-         
+    
+    def test_empty(self):
+        """Check that an exception is raised when trying to
+        read a dataset with no root file"""
+        with self.assertRaises(ValueError):
+            dataset = Dataset('papas/empty_dataset')
+    
+    def test_no_good_root_file(self):
+        with self.assertRaises(ValueError):
+            dataset = Dataset('papas/nogood_dataset')
+        
+    
         
 class TestHeppyDataset(unittest.TestCase):
     

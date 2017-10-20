@@ -4,6 +4,7 @@ from versions import Versions
 import glob
 import os
 import pprint
+import dill
 import pickle
 import shelve
 import copy

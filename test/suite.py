@@ -10,7 +10,7 @@ if __name__ == '__main__':
     suites = []
     
     pcks = [
-        '.',  # if particles is before test, test fails! 
+        '.', 
         ]
 
     for pck in pcks:

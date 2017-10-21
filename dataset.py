@@ -126,8 +126,14 @@ class Dataset(Directory):
             m = pattern.match(fname)
             if m:
                 return 'heppy'
-##        elif len(indices) == 0:
-##            return 'heppy'
+        pattern = re.compile('^Job_\S+\/\S+.root$')
+        match = []
+        for fname in self.all_files:
+            m = pattern.match(fname)
+            if m:
+                match.append(fname)
+        if len(match) == len(self.all_files):
+            return 'pythia8'
         return None            
 ##    #----------------------------------------------------------------------
 ##    def _guess_jobtype(self):

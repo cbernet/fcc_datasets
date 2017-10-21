@@ -152,6 +152,8 @@ class TestPythia8Dataset(unittest.TestCase):
         self.assertEqual(self.dataset.nfiles(), self.nfiles)
         self.assertEqual(self.dataset.ngoodfiles(), self.ngoodfiles)
         self.assertEqual(self.dataset.nevents(), self.nevents)
+        self.assertEqual(self.dataset.jobtype(), 'pythia8')
+        
      
         
 class TestFCCComponent(unittest.TestCase):

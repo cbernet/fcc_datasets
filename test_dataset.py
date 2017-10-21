@@ -10,11 +10,13 @@ def abspath(name):
     return '/'.join([basedir.basename, name])
 dataset_name_fccsw = 'papas/ee_to_ZZ_condor_A_703'
 dataset_name_heppy = 'heppy/papas/ee_to_ZZ_condor_A_703'
+dataset_name_pythia8 = 'pythia/ee_to_ZH_Z_to_nunu_Jun21_A_1'
 cfg_name = abspath('analysis_test_cfg.py')
 dataset_pattern_fccsw = '*.root'
 dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_tree.root'
+dataset_pattern_pythia8 = 'Job*/*.root'
 
-from fcc_datasets.dataset import Dataset
+from fcc_datasets.dataset import Dataset, Directory
 from fcc_datasets.fcc_component import FCCComponent
 
 cache = False
@@ -132,6 +134,26 @@ class TestHeppyDataset(unittest.TestCase):
         self.assertEqual(dataset._jobtype, 'heppy')
     
         
+class TestPythia8Dataset(unittest.TestCase):
+    
+    def setUp(self):
+        self.dataset = Dataset(dataset_name_pythia8, dataset_pattern_pythia8,
+                               cache=False,
+                               cfg=cfg_name, xsection=1.8e-9)        
+        self.nfiles = 2
+        self.ngoodfiles = 2
+        print self.dataset
+        self.nevents = 10000
+
+    def test_1_create(self):
+        '''Test dataset creation'''
+        self.assertEqual(len(self.dataset.all_files), self.nfiles)
+        self.assertEqual(len(self.dataset.list_of_good_files()), self.ngoodfiles)
+        self.assertEqual(self.dataset.nfiles(), self.nfiles)
+        self.assertEqual(self.dataset.ngoodfiles(), self.ngoodfiles)
+        self.assertEqual(self.dataset.nevents(), self.nevents)
+     
+        
 class TestFCCComponent(unittest.TestCase):
     
     #----------------------------------------------------------------------
@@ -146,8 +168,13 @@ class TestFCCComponent(unittest.TestCase):
                          comp.xSection)
         print comp
         
-        
-        
+##class TestDirectory(unittest.TestCase):
+##    
+##    def test_1(self):
+##        directory = Directory('A/B')
+##        self.assertEqual(directory.relpath('foo/bar.root'),
+##                         'foo/bar.root')
+##        
         
 ##    def test_3_print(self):
 ##        dataset = Dataset(dataset_name, dataset_pattern, cache=cache)

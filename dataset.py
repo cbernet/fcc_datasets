@@ -4,6 +4,7 @@ from versions import Versions
 import glob
 import os
 import pprint
+import dill
 import pickle
 import shelve
 import copy
@@ -16,9 +17,10 @@ from ROOT import TFile
 
 class File(object):
 
-    def __init__(self, path):
+    def __init__(self, path, dataset_path):
         self.path = path
-        self.name = os.path.basename(path) 
+        self.name = os.path.basename(path)
+        self.rel_path = path.replace(dataset_path, "").strip('/')
         self._check()
 
     def good(self):
@@ -50,7 +52,7 @@ class File(object):
         return int(tree.GetEntries())
         
     def __str__(self):
-        return '{:<30} : {}'.format(self.name, pprint.pformat(self.flags))
+        return '{:<30} : {}'.format(self.rel_path, pprint.pformat(self.flags))
         
 
 class Directory(object):
@@ -59,7 +61,7 @@ class Directory(object):
         self.path = basedir.abspath(name)
 
     def abspath(self, fname):
-        return '/'.join([self.path, fname])
+        return '/'.join([self.path, fname])        
 
 
 class Dataset(Directory):
@@ -119,8 +121,19 @@ class Dataset(Directory):
         if len(set(prefix)) == 1 and len(indices):
             #same prefix, several indices
             return 'fccsw'
-        elif len(indices) == 0:
-            return 'heppy'
+        pattern = re.compile('\S*\S+\.\S+\.\S+\_\d+\/\S+\.root$')
+        for fname in self.list_of_good_files():
+            m = pattern.match(fname)
+            if m:
+                return 'heppy'
+        pattern = re.compile('^Job_\S+\/\S+.root$')
+        match = []
+        for fname in self.all_files:
+            m = pattern.match(fname)
+            if m:
+                match.append(fname)
+        if len(match) == len(self.all_files):
+            return 'pythia8'
         return None            
 ##    #----------------------------------------------------------------------
 ##    def _guess_jobtype(self):
@@ -163,10 +176,10 @@ class Dataset(Directory):
     def _build_list_of_files(self, pattern):
         abspattern = self.abspath(pattern)
         for path in glob.glob(abspattern):
-            the_file = File(path)
-            self.all_files[the_file.name] = the_file
+            the_file = File(path, self.path)
+            self.all_files[the_file.rel_path] = the_file
             if the_file.good():
-                self.good_files[the_file.name] = the_file
+                self.good_files[the_file.rel_path] = the_file
         if len(self.all_files) == 0:
             raise ValueError('no file matching {}'.format(abspattern))
         if len(self.good_files) == 0:

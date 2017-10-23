@@ -7,10 +7,10 @@ class FCCComponent(cfg.MCComponent):
     def __init__(self, name, pattern='*.root', cache=True,
                  cfg=None, xsection=None, **kwargs):
         """"""
-        self.dataset = Dataset(name, pattern, cache, cfg, xsection)
+        dataset = Dataset(name, pattern, cache, cfg, xsection)
         super(FCCComponent, self).__init__(
-            self.dataset.name,
-            self.dataset.list_of_good_files(),
-            xSection=self.dataset.xsection(), 
+            dataset.name,
+            dataset.list_of_good_files(),
+            xSection=dataset.xsection(), 
             **kwargs
         )

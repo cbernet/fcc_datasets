@@ -251,7 +251,7 @@ class Dataset(Directory):
         with open(self._info_fname, mode='w') as outfile:
                 yaml.dump(self._data, outfile,
                           default_flow_style=False)
-        return self._data
+        return self._data  
             
     #----------------------------------------------------------------------
     def _read_yaml(self, fname=None):

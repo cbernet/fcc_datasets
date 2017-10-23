@@ -94,8 +94,8 @@ class Dataset(Directory):
             self._jobtype = self._guess_jobtype()
             self._find_mother()
             self._aggregate_yaml()
-            self._write_to_cache()
-            self.write_yaml()
+            # self._write_to_cache()
+            # self.write_yaml()
 
     #----------------------------------------------------------------------
     def _analyze_cfg(self, cfgname):
@@ -225,7 +225,14 @@ class Dataset(Directory):
         return self._mother
 
     #----------------------------------------------------------------------
-    def write_yaml(self):
+    def write(self):
+        """"""
+        self._write_to_cache()
+        self._write_yaml()
+        
+
+    #----------------------------------------------------------------------
+    def _write_yaml(self):
         '''write the yaml file'''
         self._data['sample'] = {
             'name': self.name,
@@ -279,6 +286,7 @@ class Dataset(Directory):
         
     #----------------------------------------------------------------------
     def _write_to_cache(self):
+        print 'WRITE TO CACHE'
         cache = basedir.abscache(self.name)
         if not os.path.isdir(cache):
             os.makedirs(cache)

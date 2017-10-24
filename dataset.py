@@ -12,6 +12,7 @@ import datetime
 import yaml
 import uuid
 import re
+import sys
 from ROOT import TFile
 
 
@@ -150,6 +151,7 @@ class Dataset(Directory):
         """find the mother dataset and store its name in _mother"""
         if self._jobtype == 'heppy':
             # load config from pickle file and get the mother from the input component
+            sys.path.insert(0, self.path)
             with open(self.abspath('config.pck')) as config_file:
                 config = pickle.load(config_file)
                 comps = config.components

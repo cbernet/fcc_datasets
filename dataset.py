@@ -288,7 +288,6 @@ class Dataset(Directory):
         
     #----------------------------------------------------------------------
     def _write_to_cache(self):
-        print 'WRITE TO CACHE'
         cache = basedir.abscache(self.name)
         if not os.path.isdir(cache):
             os.makedirs(cache)

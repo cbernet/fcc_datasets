@@ -27,6 +27,7 @@ class TestFccswDataset(unittest.TestCase):
         self.dataset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
                                cache=False,
                                xsection=1.8e-9)
+        self.dataset.write()
         self.nfiles = 10
         self.ngoodfiles = 10
         self.nevents = 10
@@ -93,7 +94,8 @@ class TestHeppyDataset(unittest.TestCase):
     def setUp(self):
         self.dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy,
                                cache=False,
-                               cfg=cfg_name, xsection=1.8e-9)        
+                               cfg=cfg_name, xsection=1.8e-9)
+        self.dataset.write()
         self.nfiles = 1
         self.ngoodfiles = 1
         self.nevents = 100
@@ -141,6 +143,7 @@ class TestPythia8Dataset(unittest.TestCase):
         self.dataset = Dataset(dataset_name_pythia8, dataset_pattern_pythia8,
                                cache=False,
                                cfg=cfg_name, xsection=1.8e-9)        
+        self.dataset.write()
         self.nfiles = 5
         self.ngoodfiles = 5
         self.nevents = 50
@@ -161,7 +164,7 @@ class TestFCCComponent(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_1(self):
         """Test FCC component creation"""
-        dset = Dataset(dataset_name_fccsw, cache=cache)
+        dset = Dataset(dataset_name_fccsw, cache=False)
         comp = FCCComponent(dataset_name_fccsw, dataset_pattern_fccsw,
                             xsection=dset.xsection())
         self.assertListEqual(dset.list_of_good_files(),

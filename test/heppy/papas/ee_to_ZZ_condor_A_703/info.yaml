@@ -1,14 +1,14 @@
 sample:
   id: !!python/object:uuid.UUID
-    int: 138736892637662456277358196585396488180
+    int: 171568930579050976500090530748502746309
   jobtype: heppy
   mother: papas/ee_to_ZZ_condor_A_703
   name: heppy/papas/ee_to_ZZ_condor_A_703
   nevents: 100
   njobs: 1
   njobs_ok: 1
-  timestamp: '2017-10-24T11:26:49.971208'
+  timestamp: '2017-10-24T11:49:44.114889'
   user: cbern
-  xsection: null
+  xsection: 1.8e-09
 software:
   heppy: !!python/unicode '1daf2b91a3ebafcd9184344636e48a429f8eacc5'

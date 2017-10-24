@@ -41,7 +41,7 @@ if __name__ == '__main__':
         "-v","--verbose", dest="verbose",
         default=False,
         action="store_true", 
-        help="base directory containing all samples."
+        help="print information."
     )    
     parser.add_option(
         "-x","--xsection", dest="xsection", type=float, 

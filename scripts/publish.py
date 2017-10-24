@@ -9,6 +9,7 @@ def process_dataset(dsname, options):
                  pattern=options.wildcard,
                  xsection=options.xsection, 
                  cache=False)
+    ds.write()
     if options.verbose:
         print ds
     else:

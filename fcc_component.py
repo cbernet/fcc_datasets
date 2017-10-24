@@ -4,7 +4,7 @@ from fcc_datasets.dataset import Dataset
 class FCCComponent(cfg.MCComponent):
     
     #----------------------------------------------------------------------
-    def __init__(self, name, pattern='*.root', cache=True,
+    def __init__(self, name, pattern=None, cache=True,
                  cfg=None, xsection=None, **kwargs):
         """"""
         dataset = Dataset(name, pattern, cache, cfg, xsection)

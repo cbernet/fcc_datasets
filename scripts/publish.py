@@ -8,6 +8,7 @@ import fcc_datasets.basedir as basedir
 def process_dataset(dsname, options):
     ds = Dataset(dsname,
                  pattern=options.wildcard,
+                 extract_info=options.extract, 
                  xsection=options.xsection, 
                  cache=False)
     ds.write()
@@ -47,6 +48,12 @@ if __name__ == '__main__':
         "-x","--xsection", dest="xsection", type=float, 
         default=None,
         help="cross section to be assigned to the sample."
+    )    
+    parser.add_option(
+        "-e","--extract", dest="extract",
+        default=False,
+        action="store_true", 
+        help="extract meta information from the dataset."
     )    
     (options,args) = parser.parse_args()
     

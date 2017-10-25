@@ -50,6 +50,7 @@ import fcc_datasets.basedir as basedir
 from fcc_datasets.fcc_component import FCCComponent
 comp = FCCComponent(
     'papas/ee_to_ZZ_condor_A_703',
+    '*.root', 
     cache=False,
     splitFactor=1
 )

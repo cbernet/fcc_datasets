@@ -22,6 +22,7 @@ cache = False
 class TestFccswDataset(unittest.TestCase):
 
     def setUp(self):
+        os.environ['FCCDATASETS'] = os.path.abspath('test')        
         self.dataset = Dataset(dataset_name_fccsw,
                                dataset_pattern_fccsw,
                                extract_info=True, 
@@ -92,6 +93,7 @@ class TestFccswDataset(unittest.TestCase):
 class TestHeppyDataset(unittest.TestCase):
     
     def setUp(self):
+        os.environ['FCCDATASETS'] = os.path.abspath('test')                
         self.dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy,
                                cache=False,
                                cfg=cfg_name, xsection=1.8e-9)
@@ -142,6 +144,7 @@ class TestHeppyDataset(unittest.TestCase):
 class TestPythia8Dataset(unittest.TestCase):
     
     def setUp(self):
+        os.environ['FCCDATASETS'] = os.path.abspath('test')        
         self.dataset = Dataset(dataset_name_pythia8, dataset_pattern_pythia8,
                                cache=False,
                                extract_info=True, 
@@ -163,6 +166,9 @@ class TestPythia8Dataset(unittest.TestCase):
      
         
 class TestFCCComponent(unittest.TestCase):
+    
+    def setUp(self):
+        os.environ['FCCDATASETS'] = os.path.abspath('test')                
     
     #----------------------------------------------------------------------
     def test_1(self):

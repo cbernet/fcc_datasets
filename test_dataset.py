@@ -1,10 +1,8 @@
 import unittest
 import os
 
+os.environ['FCCDATASETS'] = os.path.abspath('test')
 import basedir
-
-# basedir.basename = os.path.abspath('test')
-# basedir.basecache = os.path.abspath('test/.fcc_datasets')
 
 def abspath(name):
     return '/'.join([basedir.basename, name])
@@ -24,7 +22,9 @@ cache = False
 class TestFccswDataset(unittest.TestCase):
 
     def setUp(self):
-        self.dataset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
+        self.dataset = Dataset(dataset_name_fccsw,
+                               dataset_pattern_fccsw,
+                               extract_info=True, 
                                cache=False,
                                xsection=1.8e-9)
         self.dataset.write()
@@ -41,7 +41,7 @@ class TestFccswDataset(unittest.TestCase):
 
     def test_2_cache(self):
         '''Test dataset reading from cache'''
-        dataset = Dataset(dataset_name_fccsw, cache=cache)
+        dataset = Dataset(dataset_name_fccsw, cache=True)
         self.assertEqual(len(dataset.all_files), self.nfiles)
         self.assertEqual(len(dataset.list_of_good_files()), self.ngoodfiles)
         self.assertEqual(dataset.uid(), self.dataset.uid())
@@ -49,13 +49,13 @@ class TestFccswDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_3_nevents(self):
         """Test that the number of events is correct"""
-        dataset = Dataset(dataset_name_fccsw, cache=cache)
+        dataset = Dataset(dataset_name_fccsw, cache=True)
         self.assertEqual(dataset.nevents(), 100)
 
     #----------------------------------------------------------------------
     def test_4_yaml(self):
         """Test that the yaml file can be written and read."""
-        dataset = Dataset(dataset_name_fccsw, cache=cache)
+        dataset = Dataset(dataset_name_fccsw, cache=True)
         data_written = dataset._write_yaml()
         data_read = dataset._read_yaml()
         self.assertDictEqual(data_written, data_read)
@@ -63,8 +63,8 @@ class TestFccswDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_5_jobtype_fccsw(self):
         """test that the jobtype can be determined for fccsw"""
-        dataset = Dataset(dataset_name_fccsw, cache=cache)
-        self.assertEqual(dataset._jobtype, 'fccsw')
+        dataset = Dataset(dataset_name_fccsw, cache=True)
+        self.assertEqual(dataset.jobtype(), 'fccsw')
 
     #----------------------------------------------------------------------
     def test_6_update(self):
@@ -81,11 +81,11 @@ class TestFccswDataset(unittest.TestCase):
         """Check that an exception is raised when trying to
         read a dataset with no root file"""
         with self.assertRaises(ValueError):
-            dataset = Dataset('papas/empty_dataset')
+            dataset = Dataset('papas/empty_dataset', '*.root')
     
     def test_no_good_root_file(self):
         with self.assertRaises(ValueError):
-            dataset = Dataset('papas/nogood_dataset')
+            dataset = Dataset('papas/nogood_dataset', '*.root')
         
     
         
@@ -132,9 +132,11 @@ class TestHeppyDataset(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_5_jobtype_heppy(self):
         """test that the jobtype can be determined for heppy"""
-        dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy, 
-                          cache=cache)
-        self.assertEqual(dataset._jobtype, 'heppy')
+        dataset = Dataset(dataset_name_heppy,
+                          dataset_pattern_heppy, 
+                          cache=False,
+                          extract_info=True)
+        self.assertEqual(dataset.jobtype(), 'heppy')
     
         
 class TestPythia8Dataset(unittest.TestCase):
@@ -142,6 +144,7 @@ class TestPythia8Dataset(unittest.TestCase):
     def setUp(self):
         self.dataset = Dataset(dataset_name_pythia8, dataset_pattern_pythia8,
                                cache=False,
+                               extract_info=True, 
                                cfg=cfg_name, xsection=1.8e-9)        
         self.dataset.write()
         self.nfiles = 5
@@ -164,7 +167,8 @@ class TestFCCComponent(unittest.TestCase):
     #----------------------------------------------------------------------
     def test_1(self):
         """Test FCC component creation"""
-        dset = Dataset(dataset_name_fccsw, cache=False)
+        dset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
+                       cache=False)
         comp = FCCComponent(dataset_name_fccsw, dataset_pattern_fccsw,
                             xsection=dset.xsection())
         self.assertListEqual(dset.list_of_good_files(),

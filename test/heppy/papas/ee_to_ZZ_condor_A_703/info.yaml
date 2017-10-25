@@ -1,14 +1,14 @@
 sample:
   id: !!python/object:uuid.UUID
-    int: 171568930579050976500090530748502746309
-  jobtype: heppy
-  mother: papas/ee_to_ZZ_condor_A_703
+    int: 292777509964647478205712832602428313817
+  jobtype: null
+  mother: null
   name: heppy/papas/ee_to_ZZ_condor_A_703
   nevents: 100
   njobs: 1
   njobs_ok: 1
-  timestamp: '2017-10-24T11:49:44.114889'
-  user: cbern
+  pattern: heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_tree.root
+  timestamp: '2017-10-25T15:27:05.964647'
+  user: cbernet
   xsection: 1.8e-09
-software:
-  heppy: !!python/unicode '1daf2b91a3ebafcd9184344636e48a429f8eacc5'
+software: {}

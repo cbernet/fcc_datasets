@@ -67,52 +67,81 @@ class Directory(object):
 
 class Dataset(Directory):
 
-    def __init__(self, name, pattern=None, cache=True,
+    def __init__(self, name, pattern=None,
+                 extract_info=False, 
+                 cache=True,
                  cfg=None, xsection=None):
         super(Dataset, self).__init__(name)
         self.name = name
-        self._uid = None
-        self._mother = None
-        self._versions = None
-        self._jobtype = None
-        self._data = dict()
+        # self._pattern = pattern
+        # self._uid = None
+        # self._mother = None
+        # self._versions = None
+        ##        self._jobtype = None
+        self._data = {
+            "sample": {
+                "mother": None,
+                "jobtype": None,
+                "pattern": pattern,
+            },
+            "software": {},
+        }
+        
         self._info_fname = self.abspath('info.yaml')
-        change_requested = pattern or cfg or xsection or not cache
-        if not self._read_from_cache() or \
-           change_requested:
+        cache_read = False
+        if cache:
+            cache_read = self._read_from_cache()
+        change_requested = pattern or cfg or xsection \
+            or not cache or not cache_read
+        if change_requested:
             self._xsection = xsection
-            if self._uid is None:
-                self._uid = uuid.uuid4()
-            if cfg:
-                self._analyze_cfg(cfg)
-            if not os.path.isdir(self.path):
-                raise ValueError('{} does not exist, check your base sample directory'.format(self.path))
             self.all_files = dict()
             self.good_files = dict()
-            if pattern is None:
-                pattern = '*.root'
-            self._build_list_of_files(pattern)
-            self._jobtype = self._guess_jobtype()
-            self._find_mother()
-            self._aggregate_yaml()
-            # self._write_to_cache()
-            # self.write_yaml()
+        ##            if pattern is None:
+        ##                pattern = '*.root'
+            self._build_list_of_files()
+            if self.uid() is None:
+                self._data['sample']['id'] = uuid.uuid4()
+##            if cfg:
+##                self._analyze_cfg(cfg)
+            if extract_info:
+                self.extract_info()
+            else:
+                self.load_info()
+            if not os.path.isdir(self.path):
+                raise ValueError('{} does not exist, check your base sample directory'.format(self.path))
+
+            
+    def uid(self):
+        return self._data['sample'].get('id', None)
+    
+    #----------------------------------------------------------------------
+    def extract_info(self):
+        """"""
+        self._guess_jobtype()
+        self._find_mother()
+        self._aggregate_yaml()
+        
+    def load_info(self):
+        data = self._read_yaml()
+        self._data.update(data)        
 
     #----------------------------------------------------------------------
-    def _analyze_cfg(self, cfgname):
-        """Analyze the cfg used to build the dataset.
-        get the commit ids of the relevant imported packages
-        possibly find the mother sample(s)? 
-        """
-        self._versions = Versions(cfgname, ['heppy',
-                                            'fcc_ee_higgs',
-                                            'fcc_datasets']).tracked
+##    def _analyze_cfg(self, cfgname):
+##        """Analyze the cfg used to build the dataset.
+##        get the commit ids of the relevant imported packages
+##        possibly find the mother sample(s)? 
+##        """
+##        self._versions = Versions(cfgname, ['heppy',
+##                                            'fcc_ee_higgs',
+##                                            'fcc_datasets']).tracked
 
     #----------------------------------------------------------------------
     def _guess_jobtype(self):
         pattern = re.compile('(\S*\D)(\d+)\.root$')
         indices = []
         prefix = []
+        jobtype = None
         for fname in self.list_of_good_files():
             fname = os.path.basename(fname)
             m = pattern.match(fname)
@@ -121,12 +150,12 @@ class Dataset(Directory):
                 indices.append(int(m.group(2)))
         if len(set(prefix)) == 1 and len(indices):
             #same prefix, several indices
-            return 'fccsw'
+            jobtype = 'fccsw'
         pattern = re.compile('\S*\S+\.\S+\.\S+\_\d+\/\S+\.root$')
         for fname in self.list_of_good_files():
             m = pattern.match(fname)
             if m:
-                return 'heppy'
+                jobtype = 'heppy'
         pattern = re.compile('^Job_\S+\/\S+.root$')
         match = []
         for fname in self.all_files:
@@ -134,22 +163,13 @@ class Dataset(Directory):
             if m:
                 match.append(fname)
         if len(match) == len(self.all_files):
-            return 'pythia8'
-        return None            
-##    #----------------------------------------------------------------------
-##    def _guess_jobtype(self):
-##        """returns 'fcssw', 'fcc-pythia8-generate', 'heppy'"""
-##        root_files = glob.glob(self.abspath('*.root'))
-##        #typical job numbering pattern:
-##        pattern = re.compile('\S*{\d}\S*\.root')
-##        for files in root_files:
-##            m = pattern.match()
-
+            jobtype = 'pythia8'
+        self._data['sample']['jobtype'] = jobtype
 
     #----------------------------------------------------------------------
     def _find_mother(self):
         """find the mother dataset and store its name in _mother"""
-        if self._jobtype == 'heppy':
+        if self.jobtype() == 'heppy':
             # load config from pickle file and get the mother from the input component
             sys.path.insert(0, self.path)
             with open(self.abspath('config.pck')) as config_file:
@@ -157,7 +177,7 @@ class Dataset(Directory):
                 comps = config.components
                 assert(len(comps) == 1)
                 mother_name = comps[0].name.split('_Chunk')[0]
-                self._mother = mother_name
+                self._data['sample']['mother'] = mother_name
                 
 
     #----------------------------------------------------------------------
@@ -175,8 +195,10 @@ class Dataset(Directory):
         
 
     #----------------------------------------------------------------------
-    def _build_list_of_files(self, pattern):
-        abspattern = self.abspath(pattern)
+    def _build_list_of_files(self):
+##        if not self._pattern:
+##            self._pattern = self._data['pattern']
+        abspattern = self.abspath( self._data['sample']['pattern'] )
         for path in glob.glob(abspattern):
             the_file = File(path, self.path)
             self.all_files[the_file.rel_path] = the_file
@@ -195,11 +217,6 @@ class Dataset(Directory):
                 good_files.append(the_file.path) 
         return good_files
 
-    #----------------------------------------------------------------------
-    def uid(self):
-        """return unique id"""
-        return self._uid
-
     def nfiles(self):
         '''return the total number of files, good or not'''
         return len(self.all_files)
@@ -216,7 +233,7 @@ class Dataset(Directory):
         '''Returns the type of jobs used to produce the dataset:
         "fcssw", "heppy", None
         '''
-        return self._jobtype
+        return self._data['sample']['jobtype']
     
     def xsection(self):
         '''Returns the cross-section'''
@@ -224,7 +241,7 @@ class Dataset(Directory):
 
     def mother(self):
         '''Returns the mother'''
-        return self._mother
+        return self._data['sample']['mother']
 
     #----------------------------------------------------------------------
     def write(self):
@@ -236,27 +253,27 @@ class Dataset(Directory):
     #----------------------------------------------------------------------
     def _write_yaml(self):
         '''write the yaml file'''
-        self._data['sample'] = {
-            'name': self.name,
-            'id': self.uid(),
-            'jobtype': self.jobtype(),
-            'mother' : self.mother(),
-            'nevents': self.nevents(),
-            'njobs': self.nfiles(),
-            'njobs_ok': self.ngoodfiles(),
-            'user': os.environ['USER'],
-            'timestamp': datetime.datetime.now().isoformat(),
-            'xsection': self._xsection,
-        }
+##        self._data['sample'] = {
+##            'name': self.name,
+##            'pattern': self._pattern,
+##            # 'id': self.uid(),
+##            # 'jobtype': self.jobtype(),
+##            # 'mother' : self.mother(),
+##            'nevents': self.nevents(),
+##            'njobs': self.nfiles(),
+##            'njobs_ok': self.ngoodfiles(),
+##            'user': os.environ['USER'],
+##            'timestamp': datetime.datetime.now().isoformat(),
+##            'xsection': self._xsection,
+##        }
 ##        if self._versions:
 ##            software_data = dict()
 ##            for key, info in self._versions.iteritems():
 ##                software_data[key] = str(info['commitid'])
 ##            self.data['software'] = software_data
-        if os.path.isfile(self._info_fname):
-            with open(self._info_fname) as infile:
-                old_data = yaml.load(infile)
-                
+##        if os.path.isfile(self._info_fname):
+##            with open(self._info_fname) as infile:
+##                old_data = yaml.load(infile)             
         with open(self._info_fname, mode='w') as outfile:
                 yaml.dump(self._data, outfile,
                           default_flow_style=False)

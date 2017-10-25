@@ -1,12 +1,7 @@
 sample:
   id: !!python/object:uuid.UUID
-    int: 160005004913644072209747941074555064557
+    int: 163736204464466590295292087787755136127
   jobtype: fccsw
   mother: null
-  name: papas/ee_to_ZZ_condor_A_703
-  nevents: 100
-  njobs: 10
-  njobs_ok: 10
-  timestamp: '2017-10-24T11:49:41.356693'
-  user: cbern
-  xsection: 1.8e-09
+  pattern: '*.root'
+software: {}

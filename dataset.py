@@ -1,4 +1,4 @@
-import basedir
+import fcc_datasets.basedir as basedir
 from versions import Versions
 
 import glob

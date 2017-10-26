@@ -22,7 +22,7 @@ if __name__ == '__main__':
     )    
     parser.add_option(
         "-b","--basedir", dest="basedir",
-        default=basedir.basename,
+        default=basedir.basename(),
         help="base directory containing all samples."
     )    
     (options,args) = parser.parse_args()
@@ -32,6 +32,6 @@ if __name__ == '__main__':
         sys.exit(1)
         
     dsname = args[0]
-    basedir.basename = options.basedir
+    basedir.set_basename(options.basedir)
     
     process_dataset(dsname, options)

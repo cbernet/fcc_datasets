@@ -1,11 +1,10 @@
 import unittest
 import os
 
-os.environ['FCCDATASETS'] = os.path.abspath('test')
-import basedir
+import fcc_datasets.basedir as basedir
 
 def abspath(name):
-    return '/'.join([basedir.basename, name])
+    return '/'.join([basedir.basename(), name])
 dataset_name_fccsw = 'papas/ee_to_ZZ_condor_A_703'
 dataset_name_heppy = 'heppy/papas/ee_to_ZZ_condor_A_703'
 dataset_name_pythia8 = 'pythia/ee_Z_ddbar'
@@ -22,7 +21,6 @@ cache = False
 class TestFccswDataset(unittest.TestCase):
 
     def setUp(self):
-        os.environ['FCCDATASETS'] = os.path.abspath('test')        
         self.dataset = Dataset(dataset_name_fccsw,
                                dataset_pattern_fccsw,
                                extract_info=True, 
@@ -93,7 +91,6 @@ class TestFccswDataset(unittest.TestCase):
 class TestHeppyDataset(unittest.TestCase):
     
     def setUp(self):
-        os.environ['FCCDATASETS'] = os.path.abspath('test')                
         self.dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy,
                                cache=False,
                                extract_info=True, 
@@ -145,7 +142,6 @@ class TestHeppyDataset(unittest.TestCase):
 class TestPythia8Dataset(unittest.TestCase):
     
     def setUp(self):
-        os.environ['FCCDATASETS'] = os.path.abspath('test')        
         self.dataset = Dataset(dataset_name_pythia8, dataset_pattern_pythia8,
                                cache=False,
                                extract_info=True, 
@@ -167,10 +163,7 @@ class TestPythia8Dataset(unittest.TestCase):
      
         
 class TestFCCComponent(unittest.TestCase):
-    
-    def setUp(self):
-        os.environ['FCCDATASETS'] = os.path.abspath('test')                
-    
+       
     #----------------------------------------------------------------------
     def test_1(self):
         """Test FCC component creation"""

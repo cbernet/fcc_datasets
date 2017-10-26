@@ -172,11 +172,9 @@ class Dataset(Directory):
         if self.jobtype() == 'heppy':
             # load config from pickle file and get the mother from the input component
             sys.path.insert(0, self.path)
-            with open(self.abspath('config.pck')) as config_file:
-                config = pickle.load(config_file)
-                comps = config.components
-                assert(len(comps) == 1)
-                mother_name = comps[0].name.split('_Chunk')[0]
+            with open(self.abspath('component.pck')) as config_file:
+                comp = pickle.load(config_file)
+                mother_name = comp['name'].split('_Chunk')[0]
                 self._data['sample']['mother'] = mother_name
                 
 

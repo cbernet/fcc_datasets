@@ -96,6 +96,7 @@ class TestHeppyDataset(unittest.TestCase):
         os.environ['FCCDATASETS'] = os.path.abspath('test')                
         self.dataset = Dataset(dataset_name_heppy, dataset_pattern_heppy,
                                cache=False,
+                               extract_info=True, 
                                cfg=cfg_name, xsection=1.8e-9)
         self.dataset.write()
         self.nfiles = 1

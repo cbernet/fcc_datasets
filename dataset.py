@@ -319,6 +319,7 @@ class Dataset(Directory):
         lines.append(self.path)
         files = map(str, self.all_files.values())
         lines.extend(files)
+        lines.append(pprint.pformat(self._data))
         return '\n'.join(lines)
     
     def __repr__(self):

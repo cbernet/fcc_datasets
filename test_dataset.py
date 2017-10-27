@@ -81,13 +81,15 @@ class TestFccswDataset(unittest.TestCase):
         """Check that an exception is raised when trying to
         read a dataset with no root file"""
         with self.assertRaises(ValueError):
-            dataset = Dataset('papas/empty_dataset', '*.root')
+            dataset = Dataset('papas/empty_dataset', '*.root', extract_info=True)
     
     def test_no_good_root_file(self):
         with self.assertRaises(ValueError):
-            dataset = Dataset('papas/nogood_dataset', '*.root')
+            dataset = Dataset('papas/nogood_dataset', '*.root', extract_info=True)
         
-    
+    def test_no_yaml(self):
+        with self.assertRaises(IOError):
+            dataset = Dataset('papas/empty_dataset', '*.root', extract_info=False)
         
 class TestHeppyDataset(unittest.TestCase):
     

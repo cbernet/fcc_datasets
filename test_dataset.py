@@ -2,6 +2,7 @@ import unittest
 import os
 
 import fcc_datasets.basedir as basedir
+basedir.set_basename()
 
 def abspath(name):
     return '/'.join([basedir.basename(), name])

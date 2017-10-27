@@ -95,15 +95,7 @@ class Dataset(Directory):
             or not cache or not cache_read
         if change_requested:
             self._xsection = xsection
-            self.all_files = dict()
-            self.good_files = dict()
-        ##            if pattern is None:
-        ##                pattern = '*.root'
-            self._build_list_of_files()
-            if self.uid() is None:
-                self._data['sample']['id'] = uuid.uuid4()
-##            if cfg:
-##                self._analyze_cfg(cfg)
+            # self._build_list_of_files()
             if extract_info:
                 self.extract_info()
             else:
@@ -118,13 +110,17 @@ class Dataset(Directory):
     #----------------------------------------------------------------------
     def extract_info(self):
         """"""
+        self._build_list_of_files()
         self._guess_jobtype()
         self._find_mother()
         self._aggregate_yaml()
-        
+        if self.uid() is None:
+            self._data['sample']['id'] = uuid.uuid4()
+                
     def load_info(self):
         data = self._read_yaml()
-        self._data.update(data)        
+        self._data.update(data)
+        self._build_list_of_files()        
 
     #----------------------------------------------------------------------
 ##    def _analyze_cfg(self, cfgname):
@@ -196,6 +192,8 @@ class Dataset(Directory):
     def _build_list_of_files(self):
 ##        if not self._pattern:
 ##            self._pattern = self._data['pattern']
+        self.all_files = dict()
+        self.good_files = dict()        
         abspattern = self.abspath( self._data['sample']['pattern'] )
         for path in glob.glob(abspattern):
             the_file = File(path, self.path)

@@ -16,7 +16,7 @@ def basecache():
     return _basecache
     
 def abspath(name):
-    return '/'.join([_basename, name])
+    return '/'.join([basename(), name])
 
 def abscache(name):
     return '/'.join([_basecache, name])

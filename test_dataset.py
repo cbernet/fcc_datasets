@@ -172,12 +172,11 @@ class TestFCCComponent(unittest.TestCase):
         """Test FCC component creation"""
         dset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
                        cache=False)
-        comp = FCCComponent(dataset_name_fccsw, dataset_pattern_fccsw,
-                            xsection=dset.xsection())
+        comp = FCCComponent(dataset_name_fccsw, 
+                            xSection=dset.xsection())
         self.assertListEqual(dset.list_of_good_files(),
                              comp.files)
-        self.assertEqual(dset.xsection(),
-                         comp.xSection)
+  
         
 ##class TestDirectory(unittest.TestCase):
 ##    

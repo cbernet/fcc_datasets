@@ -11,7 +11,8 @@ if context.name == 'fcc':
     from heppy.test.plot_ee_b import Plotter
     from heppy.framework.looper import Looper
     from ROOT import TFile
-    del os.environ['FCCDATASETS']                
+    if 'FCCDATASETS' in os.environ:
+        del os.environ['FCCDATASETS']                
     from analysis_test_cfg import config
     
     import logging

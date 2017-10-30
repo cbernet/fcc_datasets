@@ -2,6 +2,7 @@ import unittest
 import os
 
 import fcc_datasets.basedir as basedir
+basedir.set_basename()
 
 def abspath(name):
     return '/'.join([basedir.basename(), name])
@@ -80,13 +81,15 @@ class TestFccswDataset(unittest.TestCase):
         """Check that an exception is raised when trying to
         read a dataset with no root file"""
         with self.assertRaises(ValueError):
-            dataset = Dataset('papas/empty_dataset', '*.root')
+            dataset = Dataset('papas/empty_dataset', '*.root', extract_info=True)
     
     def test_no_good_root_file(self):
         with self.assertRaises(ValueError):
-            dataset = Dataset('papas/nogood_dataset', '*.root')
+            dataset = Dataset('papas/nogood_dataset', '*.root', extract_info=True)
         
-    
+    def test_no_yaml(self):
+        with self.assertRaises(IOError):
+            dataset = Dataset('papas/empty_dataset', '*.root', extract_info=False)
         
 class TestHeppyDataset(unittest.TestCase):
     
@@ -169,12 +172,11 @@ class TestFCCComponent(unittest.TestCase):
         """Test FCC component creation"""
         dset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
                        cache=False)
-        comp = FCCComponent(dataset_name_fccsw, dataset_pattern_fccsw,
-                            xsection=dset.xsection())
+        comp = FCCComponent(dataset_name_fccsw, 
+                            xSection=dset.xsection())
         self.assertListEqual(dset.list_of_good_files(),
                              comp.files)
-        self.assertEqual(dset.xsection(),
-                         comp.xSection)
+  
         
 ##class TestDirectory(unittest.TestCase):
 ##    

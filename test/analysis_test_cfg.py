@@ -47,8 +47,6 @@ Collider.SQRTS = 240.
 from fcc_datasets.fcc_component import FCCComponent
 comp = FCCComponent(
     'papas/ee_to_ZZ_condor_A_703',
-    '*.root', 
-    cache=False,
     splitFactor=1
 )
 comp.splitFactor = len(comp.files)

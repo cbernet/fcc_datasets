@@ -12,7 +12,7 @@ class TestEnvVersion(unittest.TestCase):
         self.env_versions =EnvVersions({'podio':"PODIO",
                                         'dag':"FCCDAG", 
                                         'junk':'FCCJUNK', 
-                                        'root':'ROOTSYS'
+                                        'root':'ROOTSYS',
                                         'papas':'FCCPAPASCPP'})
         print self.env_versions
 

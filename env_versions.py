@@ -11,8 +11,10 @@ import fnmatch
 ########################################################################
 class EnvVersions(object):
     """
-    Look in specified environment variables to find out which software version was used
+    Looks at a dict listing specified environment variables to find out which software version was used
+    The directory corresponding to the environment variable is found
     If it has a git repository then record the commit id.
+    If not (usually because it is on the stack) just use the directory name
     """
 
     #----------------------------------------------------------------------
@@ -23,34 +25,31 @@ class EnvVersions(object):
         for key, envname in to_track_dict.iteritems():
             envval =self._get_env(envname)
             if envval:
+                #get rid of install at the end of a path (it obstructs git)
                 envval =envval.split("/install")[0]
                 self._analyze(key, envval)
 
         
     def _analyze(self, key, envval):
         info = envval
+        #look to see if git is there and extract the commit id
         if self._is_git_repo(envval):        
             repo = git.Repo(envval)
             if not repo.bare:
                 info = dict()
                 info['commitid'] = repo.head.commit.hexsha  
         self.tracked[key] = info
-        print
     
     def _is_git_repo(self, path):
+        #check to see if a git repository is found
         try:
             _ = git.Repo(path).git_dir
             return True
         except git.exc.InvalidGitRepositoryError:
             return False    
         
-    def _get_envs(self, name):
-        paths= os.environ[name].split(':')
-        set = {}
-        map(set.__setitem__, paths, [])
-        return set.keys()  
-        
     def _get_env(self, name):
+        #see if an environment variable exists with this name
         if name in self.environ:
             return self.environ[name]
         return None

@@ -15,8 +15,8 @@ def setup_condor_parser():
     ) 
     parser.add_option(
         "-e","--eosdir", dest="eosdir",
-        #default="//eos/experiment/fcc/ee/datasets/papas/new",
-        default="/Users/alice/ee/datasets/papas/",
+        default="//eos/experiment/fcc/ee/datasets/papas/",
+                      #default="/Users/alice/ee/datasets/papas/",
         help="eos directory for outputs"
     )
     parser.add_option(
@@ -49,8 +49,9 @@ def setup_condor_directories(outdir, eosdir):
     call(["mkdir", outdir+"/log"]) 
     call(["mkdir", outdir+"/output"]) 
     call(["mkdir", outdir+"/error"]) 
-    call(["mkdir", basedir])     
-    os.system("cp ./base/* " + outdir)
+    call(["mkdir", basedir])
+
+    os.system("cp $FCCDATASETS/htcondor/base/* " + outdir)
       
 
 def write_condor_software_yaml(outdir, filename="software.yaml"):
@@ -116,13 +117,20 @@ if __name__ == '__main__':
 
     #extract options
     condor_parameters = CondorParameters(options)
+    eossub= condor_parameters["eosdir"] + "/" + condor_parameters["subdirectory"]
     setup_condor_directories(condor_parameters["subdirectory"], condor_parameters["eosdir"])
     setup_condor_dag_files(condor_parameters["subdirectory"], condor_parameters["nevents"], condor_parameters["runs"])
-    write_condor_software_yaml(condor_parameters["subdirectory"] )
+    write_condor_software_yaml(eossub )
+    condor_parameters.write_yaml(eossub)
     condor_parameters.write_yaml(condor_parameters["subdirectory"])
-    condor_parameters.write_yaml(condor_parameters["eosdir"])
+
+
+    print "wrote yaml files to: " + eossub
+    os.system( "ls -l " + eossub  )
     os.chdir(condor_parameters["subdirectory"])
+
+    #os.system("ls")
     os.system( "condor_submit_dag -update_submit run.dag ; touch startdag.txt")
     os.chdir("..")
-    print os.getcdw()
+    #print os.getcwd()
     print "finished setup"

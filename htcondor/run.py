@@ -31,9 +31,15 @@ if __name__ == '__main__':
     
     outdir = '/'.join((condor_pars["eosdir"],condor_pars["subdirectory"]))
     #todo format
-    print "do gaudi run"
-    filename= outdir + "/" + "run_" + job + ".root"
-    os.system("touch "+ filename)
+    print "start gaudi run"
+
+    gaudi_command = 'LD_PRELOAD=$FCCSWBASEDIR/build.$BINARY_TAG/lib/libPapasUtils.so $FCCSWBASEDIR/run  fccrun.py {}  --rpythiainput  {} --routput output.root  --rmaxevents {}'.format(                                                                                                                                                    condor_pars["script"], condor_pars["input"], int(condor_pars["nevents"]))
+    print gaudi_command
+    os.system(gaudi_command)
+    move_command = 'xrdcp output.root {}/{}/output_{}.root'.format( condor_pars["eosdir"], condor_pars["subdirectory"], job)
+    print move_command
+    os.system(move_command)
+    #os.system("touch "+ filename)
     
-    print "do gaudi run"
+    print "finish gaudi run"
     

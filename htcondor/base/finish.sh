@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python $FCCDATASETS/htcondor/finish.py parameters.yaml
+python $FCCDATASETS/htcondor/finish.py 

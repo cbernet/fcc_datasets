@@ -3,7 +3,7 @@
  output                  = output/out.$(ClusterId).$(runnumber).txt
  error                   = error/err.$(ClusterId).$(runnumber).txt
  log                     = log/log.$(ClusterId).$(runnumber).txt
- transfer_input_files    = parameters.yaml, run.py
+ transfer_input_files    = parameters.yaml
  getenv					 = True
  arguments = $(ClusterId) $(runnumber)
  transfer_output_files = ""

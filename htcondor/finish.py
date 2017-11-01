@@ -54,11 +54,16 @@ if __name__ == '__main__':
     outdir = '/'.join((condor_pars["eosdir"],condor_pars["subdirectory"]))
     filename= '/'.join((outdir ,"papasfinish.txt"))
     os.system("touch "+ filename)
+    curdir = os.getcwd()
+    os.chdir(condor_pars["eosdir"])
     
     '''base directory where outputs are stored'''
     basedir.basename = condor_pars["eosdir"]
+    print basedir.basename
     process_dataset(condor_pars["subdirectory"], options)
     print "ls"
     os.system("ls -al " +  outdir)
     os.system("rm "+ filename)
+    print curdir
+    os.chdir(curdir)
     print "finished creation of info.yaml"

@@ -204,6 +204,9 @@ class Dataset(Directory):
             raise ValueError('no file matching {}'.format(abspattern))
         if len(self.good_files) == 0:
             raise ValueError('no good root file matching {}'.format(abspattern))
+        self._data['sample']['ngoodfiles'] = len(self.good_files)
+        self._data['sample']['nfiles'] = len(self.all_files)
+        
         
     #----------------------------------------------------------------------
     def list_of_good_files(self):

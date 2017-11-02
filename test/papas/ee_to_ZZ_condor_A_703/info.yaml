@@ -1,9 +1,0 @@
-sample:
-  id: !!python/object:uuid.UUID
-    int: 86294250196256032785111233296117119329
-  jobtype: fccsw
-  mother: null
-  nfiles: 10
-  ngoodfiles: 10
-  pattern: '*.root'
-software: {}

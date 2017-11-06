@@ -1,6 +1,7 @@
 import os
 
 class FilenameHandler(object):
+    ''' Class for extracting parts of a filename'''
     
     def __init__(self, filename):
         self.filename = filename

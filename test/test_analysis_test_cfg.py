@@ -11,6 +11,8 @@ if context.name == 'fcc':
     from heppy.test.plot_ee_b import Plotter
     from heppy.framework.looper import Looper
     from ROOT import TFile
+    if 'FCCDATASETS' in os.environ:
+        del os.environ['FCCDATASETS']                
     from analysis_test_cfg import config
     
     import logging
@@ -21,6 +23,7 @@ if context.name == 'fcc':
     class TestAnalysis(unittest.TestCase):
 
         def setUp(self):
+            os.environ['FCCDATASETS'] = os.path.abspath('test')                    
             random.seed(0xdeadbeef)
             self.outdir = tempfile.mkdtemp()
             import logging

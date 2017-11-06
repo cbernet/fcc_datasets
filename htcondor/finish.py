@@ -20,8 +20,6 @@ def process_dataset(dsname, options):
 if __name__ == '__main__':
     
     from optparse import OptionParser
-    
-    
     parser = OptionParser(
                           usage='%prog [options]',
                           description='finish a condor run'
@@ -48,12 +46,14 @@ if __name__ == '__main__':
         sys.exit(1)
         
     #read in the condor parameters from parameters.yaml so that we know the location of the output directory
+    print " read condor pars "
     condor_pars= CondorParameters("parameters.yaml")
     
     #this is the directory where the root files are stored
     outdir = '/'.join((condor_pars["base_outputdir"],condor_pars["subdirectory"]))
     #create a touch file (will be removed at the end if everything works)
     filename= '/'.join((outdir ,"finish.txt"))
+    print outdir
     os.system("touch "+ filename)
     curdir = os.getcwd()
     

@@ -57,12 +57,12 @@ def setup_condor_parser():
     )
     parser.add_option(
         "-i","--input" ,dest="input",
-        default=datasetsdir + "/pythiafiles/ee_ZZ.txt",
+        default=datasetsdir + "/htcondor/pythiafiles/ee_ZZ.txt",
         help="input file"
     )    
     parser.add_option(
         "-s","--script", dest="script",
-        default=datasetsdir + "/scripts/simple_papas_condor.py",
+        default=datasetsdir + "/htcondor/scripts/simple_papas_condor.py",
         help="fccsw script to run"
     ) 
     parser.add_option(
@@ -78,7 +78,7 @@ def setup_condor_parser():
     return parser
 
 def setup_condor_directories(subdir, base_outputdir):
-    '''¨ Creates a subdirectory in the current directory and in the output directory.
+    '''Creates a subdirectory in the current directory and in the output directory.
     The subdirectory in the current directory will be used to contain:-
         various scripts such as finish.sh, finish.sub etc
         the dag log and output files
@@ -204,11 +204,12 @@ if __name__ == '__main__':
     # move to the working directory and launch the dag job
     os.chdir(condor_parameters["subdirectory"])
     exit=1
-    while os.name<>'posix' and exit<>0: 
+    from sys import platform
+    print platform
+    while platform == "linux2" and exit<>0:
         print "submit to condor"
-        os.system( "condor_submit_dag -update_submit run.dag ; touch startdag.txt")
-        exit = os.WEXITSTATUS
-    
+        exit = os.system( "condor_submit_dag -update_submit run.dag ; touch startdag.txt")
+
     #return to original directory
     os.chdir("..")
     print "finished setup"

@@ -2,20 +2,20 @@ import os
 from fcc_datasets.env_versions import EnvVersions
 from filename_handler import FilenameHandler
 from condor_parameters import CondorParameters
-
 from subprocess import call
 
 
 def setup_condor_parser():
+    ''' Reasd in options from t line
+    '''
     from optparse import OptionParser
-    
     parser = OptionParser(
         usage='%prog  [options]',
         description='set up ready for condor dag run'
     ) 
     parser.add_option(
         "-e","--eosdir", dest="eosdir",
-        default="//eos/experiment/fcc/ee/datasets/papas/",
+        default="/eos/experiment/fcc/ee/datasets/papas/",
                       #default="/Users/alice/ee/datasets/papas/",
         help="eos directory for outputs"
     )
@@ -41,7 +41,6 @@ def setup_condor_parser():
     )         
     return parser
 
-
 def setup_condor_directories(outdir, eosdir):
     call(["mkdir", outdir])
     print "made subdirectory " +  outdir   
@@ -52,7 +51,6 @@ def setup_condor_directories(outdir, eosdir):
     call(["mkdir", basedir])
 
     os.system("cp $FCCDATASETS/htcondor/base/* " + outdir)
-      
 
 def write_condor_software_yaml(outdir, filename="software.yaml"):
     env_versions =EnvVersions({ 'fccsw': "FCCSWBASEDIR",
@@ -69,36 +67,41 @@ def write_condor_software_yaml(outdir, filename="software.yaml"):
     env_versions.write_yaml('/'.join([outdir,filename]))
     
 def write_condor_parameters_yaml(outdir, filename="parameters.yaml"):
-    
     parameters = Parameters()
-    parameters.add("eosdir",eosdir)
-    parameters.add("pythiafile",options.pythia)
-    parameters.add("subdirectory",outdir)
-    parameters.add("script",options.script) 
-    parameters.add("nevents",options.nevents) 
-    parameters.add("nruns",options.nruns) 
+    parameters.add("eosdir", eosdir)
+    parameters.add("pythiafile", options.pythia)
+    parameters.add("subdirectory", outdir)
+    parameters.add("script", options.script)
+    parameters.add("nevents", options.nevents)
+    parameters.add("nruns", options.nruns)
+    #create a parameters yaml in the working directory
     parameters.write_yaml('/'.join([outdir,fname]))
+    #also make one in the output directory
     parameters.write_yaml('/'.join([basedir,fname]))
     
     
 def setup_condor_dag_files(outdir, nevents, runs, rate = 100000):
-    #create all the jobs needed in dag file
+    '''
+    writes dag job information to run.dag file
+    
+    '''
+    #create a dag file which will list all the jobs needed
     outfile =  outdir + "\/run.dag"
     for c in range(runs):
         os.system("echo Job A" + str(c) + " run.sub >> " + outfile)
         os.system("echo Vars A" + str(c) + " runnumber=\\\"" + str(c) + "\\\"  >> " + outfile)
     os.system("echo FINAL FO finish.sub >> " + outfile)
     
-    #automatically choose queue based on rate
+    #automatically choose queue based on rate,
     flavour="expresso"  
-    if nevents>8*rate:
-        flavour="tomorrow"
+    if nevents>8*rate: #
+        flavour="tomorrow" # 1 day
     elif nevents>2*rate:
-        flavour="workday"
+        flavour="workday" # 8 hours
     elif nevents>rate:
-        flavour="longlunch"
-    elif nevents>rate/3:
-        flavour="microcentury"
+        flavour="longlunch" # 2 hours
+    elif nevents>rate/2:
+        flavour="microcentury"  # 1 hour
     
     print "job is flavour: " + flavour
     outfile =  outdir + "\/run.sub"

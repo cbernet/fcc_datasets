@@ -59,7 +59,8 @@ if __name__ == '__main__':
     
     '''base directory where outputs are stored'''
     basedir.basename = condor_pars["eosdir"]
-    print basedir.basename
+    
+    print basedir.basename, condor_pars["subdirectory"]
     process_dataset(condor_pars["subdirectory"], options)
     print "ls"
     os.system("ls -al " +  outdir)

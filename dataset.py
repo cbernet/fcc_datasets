@@ -20,11 +20,8 @@ class File(object):
 
     def __init__(self, path, dataset_path):
         self.path = path
-        print path
         self.name = os.path.basename(path)
-        print self.name
         self.rel_path = path.replace(dataset_path, "").strip('/')
-        print self.rel_path
         self._check()
 
     def good(self):
@@ -51,8 +48,6 @@ class File(object):
     def _check_n_events(self):
         if self.flags['zero_size']:
             return None
-        print "root ", self.path
-        print "check " , os.path.isfile(self.path)
         rootfile = TFile(self.path)
         tree = rootfile.Get("events")
         return int(tree.GetEntries())
@@ -202,7 +197,6 @@ class Dataset(Directory):
         abspattern = self.abspath( self._data['sample']['pattern'] )
         for path in glob.glob(abspattern):
             the_file = File(path, self.path)
-            print the_file
             self.all_files[the_file.rel_path] = the_file
             if the_file.good():
                 self.good_files[the_file.rel_path] = the_file

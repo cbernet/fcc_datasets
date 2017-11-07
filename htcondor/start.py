@@ -6,31 +6,39 @@ from subprocess import call
 
 ''' Start.py is used to setup all files and directories needed for a condor batch run
 
-    Usage: python $FCCDATASETS/htcondor/start.py -e baseoutdir -i inputfile -s script -n nevents -r runs
+    Usage: python $FCCDATASETS/htcondor/start.py -b baseoutdir -i inputfile -s script -e nevents -r runs
     
-    example
-    python $FCCDATASETS/htcondor/start.py -e $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -n 100 -r 4
+    Example:
+    python $FCCDATASETS/htcondor/start.py -b $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -e 100 -r 4
     
+    Tutorial:
+    #NB must source init.sh in FCCSW and in fcc_datasets
+    mkdir condor_runs
+    cd condor_runs
+    #simple small test run
+    python $FCCDATASETS/htcondor/start.py
+    #bigger run
+    python $FCCDATASETS/htcondor/start.py -e 500000 -r 10
+    
+    Details:
     A subdirectory name will be automatically created based on the run parameters.
     A working subdirectory of this name will be created in the current directory. 
     Log/output/error subdirectories needed for condor are created in the working directory.
     The working directory will receive outputs/logs/errors 
-    from the condor_dag and condor submissions, and can be referred to uncover any issues.
-    Some scipts and sub files are copied into the working directory from $FCCSDATASET/htcondor/base
-    Some sub files are written/added to according to run parameters
+    from the condor_dag and condor submissions, and can be referred to to uncover any issues.
+    Some scipts and submission files are copied into the working directory from $FCCSDATASET/htcondor/base
+    Some submission files are written/added to by start.py according to run parameters
     
-    An output subdirectory of this name will be created in the base output directory (usually EOS) to hold root and yaml outputs
+    An output subdirectory of the same name will be created in the base output directory (usually EOS) to hold root and yaml outputs
     
     The run is submitted to condor. This executes run.dag which will execute the individual runs and, when these have completed, a finish.sub which 
     creates a final info.yaml summary.
-    
 '''
-
 
 def setup_condor_parser():
     ''' Reads in options from the line command line:
     The options are
-    -e base_outputdir -i inputfile -s script -n nevents -r runs
+    -b base_outputdir -i inputfile -s script -e nevents -r runs
     '''
     from optparse import OptionParser
     #defaults are in FCCDATASETS directory
@@ -51,7 +59,7 @@ def setup_condor_parser():
         description='set up ready for condor dag run'
     ) 
     parser.add_option(
-        "-e","--base_outputdir", dest="base_outputdir",
+        "-b","--base_outputdir", dest="base_outputdir",
         default=eosdir,
         help="directory for outputs"
     )
@@ -66,7 +74,7 @@ def setup_condor_parser():
         help="fccsw script to run"
     ) 
     parser.add_option(
-        "-n","--nevents", dest="nevents",
+        "-e","--nevents", dest="nevents",
         default="10",
         help="number of events"
     ) 
@@ -94,7 +102,7 @@ def setup_condor_directories(subdir, base_outputdir):
     call(["mkdir", subdir+"/log"]) 
     call(["mkdir", subdir+"/output"]) 
     call(["mkdir", subdir+"/error"]) 
-    #create a subdirectory in the outputs directory
+    #create a subdirectory in the base output directory
     basedir = ''.join((base_outputdir, subdir))
     call(["mkdir", basedir])
 
@@ -118,7 +126,6 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'junk': 'FCCJUNK',
                                 'root': 'ROOTSYS',
                                 'fccpapas':'FCCPAPASCPP'})
-    #print env_versions
     env_versions.write_yaml('/'.join([subdir,filename]))
     
 def write_condor_parameters_yaml(subdir, filename="parameters.yaml"):
@@ -127,7 +134,7 @@ def write_condor_parameters_yaml(subdir, filename="parameters.yaml"):
     @param filename: the name of the output yaml file
     '''
     parameters = Parameters()
-    parameters.add("base_outputdir", base_outputdir) # the base eos path (the subdirectory below will be appended to this)
+    parameters.add("base_outputdir", base_outputdir) # the base output path (the subdirectory below will be appended to this)
     parameters.add("pythiafile", options.pythia) # full path to the pythia file
     parameters.add("subdirectory", subdir) # subdirectory name for this run, there will be a dir with this name in the work and output locations
     parameters.add("script", options.script) #fccsw script to be run
@@ -145,7 +152,6 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 50000):
     @param nevents: how many events per fcc papas run
     @param runs: how many fcc papas runs
     @param rate: number of events that could (easily) be run in a hour
-       
     '''
     #create a dag file which will list all the jobs needed
     outfile =  subdir + "\/run.dag"
@@ -164,19 +170,17 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 50000):
         flavour="longlunch" # 2 hours
     elif nevents>rate:
         flavour="microcentury"  # 1 hour
-    
     print "job is flavour: " + flavour
+
     outfile =  subdir + "\/run.sub"
-    os.system("echo +JobFlavour = " + flavour +" >> " + outfile)
+    os.system("echo +JobFlavour = \\\"" + flavour +"\\\" >> " + outfile)
     os.system("echo Queue >> " + outfile)
-      
 
 
 if __name__ == '__main__':
-    ''' 
-    Usage: python $FCCDATASETS/htcondor/start.py -e base_outputdir -i inputfile -s script -n nevents -r runs
-    '''    
-    
+    '''
+    Usage: python $FCCDATASETS/htcondor/start.py -b base_outputdir -i inputfile -s script -e nevents -r runs
+    '''
     #read in the command line options
     parser = setup_condor_parser()
     (options,args) = parser.parse_args()
@@ -206,9 +210,11 @@ if __name__ == '__main__':
     exit=1
     from sys import platform
     print platform
+    #condor submissions often fail, so keep trying to submit until one is accepted.
     while platform == "linux2" and exit<>0:
         print "submit to condor"
-        exit = os.system( "condor_submit_dag -update_submit run.dag ; touch startdag.txt")
+        exit = os.system( "condor_submit_dag -update_submit run.dag ")
+        print exit
 
     #return to original directory
     os.chdir("..")

@@ -19,7 +19,6 @@ class EnvVersions(object):
 
     #----------------------------------------------------------------------
     def __init__(self, to_track_dict):
-   
         self.tracked = dict()
         self.environ = os.environ
         for key, envname in to_track_dict.iteritems():
@@ -28,7 +27,6 @@ class EnvVersions(object):
                 #get rid of install at the end of a path (it obstructs git)
                 envval =envval.split("/install")[0]
                 self._analyze(key, envval)
-
         
     def _analyze(self, key, envval):
         info = envval

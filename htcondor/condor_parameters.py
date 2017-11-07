@@ -1,11 +1,7 @@
 import os
 import pprint
-#import fnmatch
-#import re
-#import git
 import yaml
 import sys
-#import fnmatch
 from filename_handler import FilenameHandler
 import datetime
 import optparse 
@@ -31,15 +27,13 @@ class CondorParameters(object):
         else:   #or from a yaml file with a parameters section
             with open(inputs, mode='r') as infile:
                 self.pars = yaml.load(infile)["parameters"]
-            
-    
+
     def add(self, key, value):
         self.pars[key] = value
         
     def __getitem__(self, index):
         return self.pars[index]
     
-    #----------------------------------------------------------------------
     def write_yaml(self, path, filename ="parameters.yaml"):
         '''write the condor parameters to a yaml file'''
         outfile = '/'.join([path, filename])

@@ -1,3 +1,2 @@
 #!/bin/bash
-
-python $FCCDATASETS/htcondor/finish.py 
+python $FCCDATASETS/htcondor/finish.py

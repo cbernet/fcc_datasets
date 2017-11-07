@@ -1,10 +1,11 @@
 import os
 from fcc_datasets.env_versions import EnvVersions
 from filename_handler import FilenameHandler
-from condor_parameters import CondorParameters
+from condor_parameters import CondorParameters, setup_condor_parser
 from subprocess import call
 
 ''' Start.py is used to setup all files and directories needed for a condor batch run
+    #NB You can run this under Mac and it will do everything but not make a condor submission
 
     Usage: python $FCCDATASETS/htcondor/start.py -b baseoutdir -i inputfile -s script -e nevents -r runs
     
@@ -13,6 +14,7 @@ from subprocess import call
     
     Tutorial:
     #NB must source init.sh in FCCSW and in fcc_datasets
+    
     mkdir condor_runs
     cd condor_runs
     #simple small test run
@@ -34,56 +36,6 @@ from subprocess import call
     The run is submitted to condor. This executes run.dag which will execute the individual runs and, when these have completed, a finish.sub which 
     creates a final info.yaml summary.
 '''
-
-def setup_condor_parser():
-    ''' Reads in options from the line command line:
-    The options are
-    -b base_outputdir -i inputfile -s script -e nevents -r runs
-    '''
-    from optparse import OptionParser
-    #defaults are in FCCDATASETS directory
-    environ = os.environ
-    datasetsdir = ""
-    eosdir=""
-    if "FCCDATASETS" in environ:
-        datasetsdir = environ["FCCDATASETS"] 
-    else:
-        print "FCCDATASETS environment variable is missing - call init.sh"
-    if "EOSCONDOR" in environ:
-        eosdir = environ["EOSCONDOR"] 
-    else:
-        print "EOSCONDOR environment variable is missing - call/read init.sh"    
-        
-    parser = OptionParser(
-        usage='%prog  [options]',
-        description='set up ready for condor dag run'
-    ) 
-    parser.add_option(
-        "-b","--base_outputdir", dest="base_outputdir",
-        default=eosdir,
-        help="directory for outputs"
-    )
-    parser.add_option(
-        "-i","--input" ,dest="input",
-        default=datasetsdir + "/htcondor/pythiafiles/ee_ZZ.txt",
-        help="input file"
-    )    
-    parser.add_option(
-        "-s","--script", dest="script",
-        default=datasetsdir + "/htcondor/scripts/simple_papas_condor.py",
-        help="fccsw script to run"
-    ) 
-    parser.add_option(
-        "-e","--nevents", dest="nevents",
-        default="10",
-        help="number of events"
-    ) 
-    parser.add_option(
-        "-r","--runs", dest="runs",
-        default="3",
-        help="number of htcondor runs"
-    )         
-    return parser
 
 def setup_condor_directories(subdir, base_outputdir):
     '''Creates a subdirectory in the current directory and in the output directory.
@@ -127,24 +79,6 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'root': 'ROOTSYS',
                                 'fccpapas':'FCCPAPASCPP'})
     env_versions.write_yaml('/'.join([subdir,filename]))
-    
-def write_condor_parameters_yaml(subdir, filename="parameters.yaml"):
-    ''' writes the parameters.yaml file to both the work and output directories
-    @param subdir: the name of the subdirectory
-    @param filename: the name of the output yaml file
-    '''
-    parameters = Parameters()
-    parameters.add("base_outputdir", base_outputdir) # the base output path (the subdirectory below will be appended to this)
-    parameters.add("pythiafile", options.pythia) # full path to the pythia file
-    parameters.add("subdirectory", subdir) # subdirectory name for this run, there will be a dir with this name in the work and output locations
-    parameters.add("script", options.script) #fccsw script to be run
-    parameters.add("nevents", options.nevents) #number of events
-    parameters.add("nruns", options.nruns) #number of runs
-    #create a parameters yaml in the working directory
-    parameters.write_yaml('/'.join([subdir,fname]))
-    #also make one in the output directory
-    parameters.write_yaml('/'.join([basedir,fname]))
-    
     
 def setup_condor_dag_files(subdir, nevents, runs, rate = 50000):
     '''

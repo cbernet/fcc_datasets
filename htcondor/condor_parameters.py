@@ -7,6 +7,57 @@ import datetime
 import optparse 
 
 
+def setup_condor_parser():
+    ''' Reads in options from the line command line:
+    The options are
+    -b base_outputdir -i inputfile -s script -e nevents -r runs
+    '''
+    from optparse import OptionParser
+    #defaults are in FCCDATASETS directory
+    environ = os.environ
+    datasetsdir = ""
+    eosdir=""
+    if "FCCDATASETS" in environ:
+        datasetsdir = environ["FCCDATASETS"] 
+    else:
+        print "FCCDATASETS environment variable is missing - call init.sh"
+    if "EOSCONDOR" in environ:
+        eosdir = environ["EOSCONDOR"] 
+    else:
+        print "EOSCONDOR environment variable is missing - call/read init.sh"    
+        
+    parser = OptionParser(
+        usage='%prog  [options]',
+        description='set up ready for condor dag run'
+    ) 
+    parser.add_option(
+        "-b","--base_outputdir", dest="base_outputdir",
+        default=eosdir,
+        help="directory for outputs"
+    )
+    parser.add_option(
+        "-i","--input" ,dest="input",
+        default=datasetsdir + "/htcondor/pythiafiles/ee_ZZ.txt",
+        help="input file"
+    )    
+    parser.add_option(
+        "-s","--script", dest="script",
+        default=datasetsdir + "/htcondor/scripts/simple_papas_condor.py",
+        help="fccsw script to run"
+    ) 
+    parser.add_option(
+        "-e","--nevents", dest="nevents",
+        default="10",
+        help="number of events"
+    ) 
+    parser.add_option(
+        "-r","--runs", dest="runs",
+        default="3",
+        help="number of htcondor runs"
+    )         
+    return parser
+
+
 class CondorParameters(object):
     """
     creates a dict of condor run parameters either using command line options

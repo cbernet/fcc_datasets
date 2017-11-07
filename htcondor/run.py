@@ -29,13 +29,13 @@ if __name__ == '__main__':
     
     job=sys.argv[2]
 
-    filename= "start_"+job+".txt"
-    print "touch " + filename
-    os.system("touch "+ filename)
-    
     # read in the run parameters
     condor_pars= CondorParameters("parameters.yaml")
     outdir = '/'.join((condor_pars["base_outputdir"],condor_pars["subdirectory"]))
+
+    filename= outdir + "/start_"+job+".txt"
+    print "touch " + filename
+    os.system("touch "+ filename)
 
     #create the gaudi run command from the run parameters
     gaudi_command = 'LD_PRELOAD=$FCCSWBASEDIR/build.$BINARY_TAG/lib/libPapasUtils.so $FCCSWBASEDIR/run  fccrun.py {}  --rpythiainput  {} --routput output.root  --rmaxevents {}'.format(                                                                                                                                                    condor_pars["script"], condor_pars["input"], int(condor_pars["nevents"]))

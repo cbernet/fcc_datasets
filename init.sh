@@ -7,7 +7,7 @@ echo $unamestr
 if [[ "$unamestr" == 'Linux' ]]; then
     export EOSCONDOR=/eos/experiment/fcc/ee/datasets/papas/
 else
-    export EOSCONDOR=~/ee/datasets/papas
+    export EOSCONDOR=~/ee/
 fi
 #TODO discuss with colin best way to deal with EOS and with filepaths
 #Mac osx command for linking eos after a kinit token is setup

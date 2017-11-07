@@ -5,7 +5,8 @@ _basename_default = '/'.join([fcc_datasets.__path__[0], 'test'])
 _basename = _basename_default
 _basecache= '/'.join([os.environ['HOME'],'.fcc_datasets'])
 
-def basename():    
+
+def basename():
     envbasename = os.environ.get('FCCDATASETBASEOUT', None)
     if envbasename:
         return envbasename

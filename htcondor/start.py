@@ -95,7 +95,7 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 50000):
     os.system('echo FINAL FO finish.sub >> {}'.format(outfile))
     
     #automatically choose queue based on rate,
-    flavour="expresso"  
+    flavour="espresso"  
     if nevents>16*rate: #
         flavour="tomorrow" # 1 day
     elif nevents>4*rate:

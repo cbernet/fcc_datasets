@@ -30,7 +30,7 @@ if __name__ == '__main__':
     ds = Dataset(condor_pars["subdirectory"],
                      pattern="*.root",
                      xsection=None,
-                     extract_info=False,
+                     extract_info=True,
                      cache=False)
     ds.write()
     

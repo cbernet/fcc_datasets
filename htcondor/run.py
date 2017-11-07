@@ -29,15 +29,13 @@ if __name__ == '__main__':
     
     job=sys.argv[2]
 
-    filename= "start_"+job+".txt"
-    print "touch " + filename
-    os.system("touch "+ filename)
-    
     # read in the run parameters
     condor_pars= CondorParameters("parameters.yaml")
     outdir = '/'.join((condor_pars["base_outputdir"],condor_pars["subdirectory"]))
 
-    filename= "start_"+job+".txt"
+
+    filename= outdir + "/start_"+job+".txt"
+    print "touch " + filename
     os.system("touch "+ filename)
 
     #create the gaudi run command from the run parameters

@@ -96,13 +96,13 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 50000):
     
     #automatically choose queue based on rate,
     flavour="espresso"  
-    if nevents>16*rate: #
+    if nevents>8*rate: #
         flavour="tomorrow" # 1 day
-    elif nevents>4*rate:
-        flavour="workday" # 8 hours
     elif nevents>2*rate:
-        flavour="longlunch" # 2 hours
+        flavour="workday" # 8 hours
     elif nevents>rate:
+        flavour="longlunch" # 2 hours
+    elif nevents>rate/3:
         flavour="microcentury"  # 1 hour
     print "job is flavour: " + flavour
 

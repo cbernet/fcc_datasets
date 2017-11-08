@@ -80,7 +80,7 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'fccpapas':'FCCPAPASCPP'})
     env_versions.write_yaml('/'.join([subdir,filename]))
     
-def setup_condor_dag_files(subdir, nevents, runs, rate = 50000):
+def setup_condor_dag_files(subdir, nevents, runs, rate = 100000):
     '''
     writes dag job information to the run.dag file
     @param nevents: how many events per fcc papas run

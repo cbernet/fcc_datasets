@@ -2,7 +2,7 @@ import os
 import pprint
 import yaml
 import sys
-from filename_handler import FilenameHandler
+from fcc_datasets.htcondor.filename_handler import FilenameHandler
 import datetime
 import optparse 
 

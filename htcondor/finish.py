@@ -36,6 +36,8 @@ if __name__ == '__main__':
     
     print "ls"
     os.system("ls -al " +  outdir)
+    #put a copy of inf.yaml in the work directory for easy reference
+    os.system("cp " + condor_pars["subdirectory"] +"/info.yaml " + curdir  )
     
     #remove the touch file
     os.system("rm "+ filename)

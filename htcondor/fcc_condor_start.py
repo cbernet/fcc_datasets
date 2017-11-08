@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 from fcc_datasets.env_versions import EnvVersions
 from filename_handler import FilenameHandler
@@ -7,20 +9,24 @@ from subprocess import call
 ''' Start.py is used to setup all files and directories needed for a condor batch run
     #NB You can run this under Mac and it will do everything but not make a condor submission
 
-    Usage: python $FCCDATASETS/htcondor/start.py -b baseoutdir -i inputfile -s script -e nevents -r runs
+    Usage: fcc_condor_start.py -b baseoutdir -i inputfile -s script -e nevents -r runs
     
     Example:
-    python $FCCDATASETS/htcondor/start.py -b $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -e 100 -r 4
+    fcc_condor_start.py -b $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -e 100 -r 4
     
     Tutorial:
-    #NB must source init.sh in FCCSW and in fcc_datasets
-    
+    #Source init.sh for
+        - FCCSW 
+        - heppy
+        - fcc_datasets 
+        
+    #make a directory to contain condor working directories
     mkdir condor_runs
     cd condor_runs
     #simple small test run
-    python $FCCDATASETS/htcondor/start.py
+    fcc_condor_start.py
     #bigger run
-    python $FCCDATASETS/htcondor/start.py -e 500000 -r 10
+    fcc_condor_start.py -e 500000 -r 10
     
     Details:
     A subdirectory name will be automatically created based on the run parameters.
@@ -113,7 +119,7 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 100000):
 
 if __name__ == '__main__':
     '''
-    Usage: python $FCCDATASETS/htcondor/start.py -b base_outputdir -i inputfile -s script -e nevents -r runs
+    Usage: fcc_condor_start.py -b base_outputdir -i inputfile -s script -e nevents -r runs
     '''
     #read in the command line options
     parser = setup_condor_parser()

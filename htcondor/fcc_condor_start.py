@@ -81,7 +81,7 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'pythia8': "PYTHIA8_DIR",
                                 'podio': "PODIO",
                                 'fccdag': "FCCDAG",
-                                'junk': 'FCCJUNK',
+                                'heppy': "HEPPY",
                                 'root': 'ROOTSYS',
                                 'fccpapas':'FCCPAPASCPP'})
     env_versions.write_yaml('/'.join([subdir,filename]))

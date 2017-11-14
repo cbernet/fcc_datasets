@@ -5,7 +5,7 @@
  log                     = log/log.$(ClusterId).$(runnumber).txt
  transfer_input_files    = parameters.yaml
  getenv					 = True
- arguments = $(ClusterId) $(runnumber)
- transfer_input_files = parameters.yaml, Sim, Generation, Generation/, Sim/
+ arguments =  $(runnumber)
+ transfer_input_files = parameters.yaml, Sim, Generation
  transfer_output_files = ""
  +AccountingGroup = "group_u_FCC.local_gen"

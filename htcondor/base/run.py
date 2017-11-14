@@ -18,16 +18,16 @@ if __name__ == '__main__':
     
     from optparse import OptionParser
     parser = OptionParser(
-                          usage='%prog  cluster job ',
+                          usage='%prog  job ',
                           description='do a condor run'
                           )
     (options,args) = parser.parse_args()
     
-    if len(args) != 2:
+    if len(args) != 1:
         parser.print_usage()
         sys.exit(1)
     
-    job=sys.argv[2]
+    job=sys.argv[1]
 
     # read in the run parameters
     condor_pars= CondorParameters("parameters.yaml")
@@ -38,16 +38,10 @@ if __name__ == '__main__':
     print "started " + filename
 
     #create the gaudi run command from the run parameters
-    gaudi_command = 'LD_PRELOAD=$FCCSWBASEDIR/build.$BINARY_TAG/lib/libPapasUtils.so $FCCSWBASEDIR/run  fccrun.py {}  --rpythiainput  {} --routput output.root  --rmaxevents {}'.format(                                                                                                                                                    condor_pars["script"], condor_pars["input"], int(condor_pars["nevents"]))
-    
+    gaudi_command = eval(condor_pars["gaudi_command"])
     print gaudi_command
     sys.stdout.flush()
-    
-    #submit the command
-    os.system(gaudi_command)
-    print gaudi_command
-    sys.stdout.flush()
-    
+
     #submit the command
     os.system(gaudi_command)
     

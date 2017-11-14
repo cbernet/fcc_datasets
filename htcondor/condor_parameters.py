@@ -10,7 +10,7 @@ import optparse
 def setup_condor_parser():
     ''' Reads in options from the line command line:
     The options are
-    -b base_outputdir -i inputfile -s script -e nevents -r runs
+    -p parameters -b base_outputdir -i inputfile -s script -e nevents -r runs
     '''
     from optparse import OptionParser
     #defaults are in FCCDATASETS directory
@@ -31,34 +31,34 @@ def setup_condor_parser():
         description='set up ready for condor dag run'
     ) 
     parser.add_option(
+        "-p","--parameters", dest="parameters",
+        default="scripts/papas_parameters.yaml",
+        help="default model parameters yaml"
+    )    
+    parser.add_option(
         "-b","--base_outputdir", dest="base_outputdir",
-        default=eosdir,
         help="directory for outputs"
     )
     parser.add_option(
         "-i","--input" ,dest="input",
-        default=datasetsdir + "/htcondor/pythiafiles/ee_ZZ.txt",
         help="input file"
     )    
     parser.add_option(
         "-s","--script", dest="script",
-        default=datasetsdir + "/htcondor/scripts/simple_papas_condor.py",
         help="fccsw script to run"
     ) 
     parser.add_option(
         "-e","--nevents", dest="nevents",
-        default="10",
         help="number of events"
     ) 
     parser.add_option(
         "-r","--runs", dest="runs",
-        default="3",
         help="number of htcondor runs"
     )         
     return parser
 
 
-class CondorParameters(object):
+class CondorParameters(object): 
     """
     creates a dict of condor run parameters either using command line options
     or reading in from an existing parameters.yaml file.
@@ -68,12 +68,15 @@ class CondorParameters(object):
     def __init__(self, inputs):
         #parameters can arrive from options
         if isinstance(inputs, optparse.Values):
-            self.pars = dict() 
-            self.add("base_outputdir",inputs.base_outputdir)
-            self.add("input",inputs.input)
-            self.add("script",inputs.script) 
-            self.add("nevents",int(inputs.nevents))
-            self.add("runs",int(inputs.runs) )   
+            pardict= vars(inputs)
+            with open(inputs.parameters, mode='r') as infile:
+                self.pars = yaml.load(infile)["default_parameters"]            
+            for key, value in pardict.iteritems():
+                if value:
+                    try:
+                        self.add(key,int(value))
+                    except:
+                        self.add(key,value) 
             self.add("subdirectory",self._get_next_condor_directory())
         else:   #or from a yaml file with a parameters section
             with open(inputs, mode='r') as infile:

@@ -1,3 +1,0 @@
-parameters:
-  script: scripts/simple_papas_condor.py
-  gaudi_command: "'LD_PRELOAD=$FCCSWBASEDIR/build.$BINARY_TAG/lib/libPapasUtils.so $FCCSWBASEDIR/run  fccrun.py  --rpythiainput  {} '.format(condor_parameters[\"script\"])"

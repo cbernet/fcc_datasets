@@ -65,7 +65,8 @@ def setup_condor_directories(subdir, base_outputdir):
     call(["mkdir", basedir])
 
     #copy the files in $FCCDATASETS/htcondor/base/ into the working directory to be used for the condor run
-    os.system("cp $FCCDATASETS/htcondor/base/* " + subdir)
+    os.system("cp -R $FCCDATASETS/htcondor/base/* " + subdir)
+    os.system("ls " + subdir)
 
 def write_condor_software_yaml(subdir, filename="software.yaml"):
     ''' works out and writes a software.yaml file containing 
@@ -81,6 +82,7 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'pythia8': "PYTHIA8_DIR",
                                 'podio': "PODIO",
                                 'fccdag': "FCCDAG",
+                                'heppy': "HEPPY",
                                 'junk': 'FCCJUNK',
                                 'root': 'ROOTSYS',
                                 'fccpapas':'FCCPAPASCPP'})
@@ -113,6 +115,9 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 100000):
     print "job is flavour: " + flavour
 
     outfile =  subdir + "\/run.sub"
+    os.system("cat " + outfile)
+    print outfile
+    print "echo +JobFlavour = \\\"" + flavour +"\\\" >> " + outfile
     os.system("echo +JobFlavour = \\\"" + flavour +"\\\" >> " + outfile)
     os.system("echo Queue >> " + outfile)
 

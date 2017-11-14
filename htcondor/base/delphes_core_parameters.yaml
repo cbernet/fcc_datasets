@@ -1,0 +1,2 @@
+gaudi_parameters:
+  gaudi_command: '$FCCSWBASEDIR/run  fccrun.py Sim/SimDelphesInterface/options/PythiaDelphes_config.py'

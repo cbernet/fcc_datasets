@@ -140,7 +140,7 @@ if __name__ == '__main__':
     #create work and output directories 
     setup_condor_directories(condor_parameters["subdirectory"], condor_parameters["base_outputdir"])
     #create the dag files needed for the run
-    setup_condor_dag_files(condor_parameters["subdirectory"], condor_parameters["events"], condor_parameters["runs"])
+    setup_condor_dag_files(condor_parameters["subdirectory"], condor_parameters["events"], condor_parameters["runs"], condor_parameters["rate"])
     #write parameters to working directory
     condor_parameters.write_yaml(condor_parameters["subdirectory"])    
     #write software and paramater yaml files to the output location 

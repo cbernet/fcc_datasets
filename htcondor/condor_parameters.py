@@ -4,7 +4,8 @@ import yaml
 import sys
 from fcc_datasets.htcondor.filename_handler import FilenameHandler
 import datetime
-import optparse 
+import optparse
+import platform
 
 
 def setup_condor_parser():
@@ -64,7 +65,14 @@ class CondorParameters(object):
                         self.add(key,int(value))
                     except:
                         self.add(key,value) 
+            if platform.system()=="Darwin":
+                print "Warning: overriding base_outputdir as not accessible"
+                if not os.path.exists(self.pars["base_outputdir"]):
+                    if not os.path.exists("eos"):
+                        os.mkdir("eos")
+                    self.add("base_outputdir","eos/")
             self.add("subdirectory",self._get_next_condor_directory())
+    
         else:   #or from a yaml file with a parameters section
             with open(inputs, mode='r') as infile:
                 self.pars = yaml.load(infile)["parameters"]
@@ -88,7 +96,7 @@ class CondorParameters(object):
     def _get_next_condor_directory(self, basename=None):
         ''' make a new directory name of the form condor_basename_20171019_e10_r3_uniqueid '''
         dt=datetime.datetime.now().strftime('%Y%m%d')    
-        subdirectory='_'.join(("condor", self["name"], dt, "e" +str(self["events"]), "r"+str(self["runs"])))
+        subdirectory='_'.join((self["name"], dt, "e" +str(self["events"]), "r"+str(self["runs"])))
     
         #automatically number the directory so it is unique
         x=0

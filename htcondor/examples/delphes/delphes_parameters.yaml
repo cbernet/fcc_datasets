@@ -1,7 +1,8 @@
 default_parameters:
-  base_outputdir: /afs/cern.ch/work/a/alrobson/delphes/delpheseos/
+  base_outputdir: /eos/experiment/fcc/ee/datasets/papas/
   name: delphes
   script: $FCCDATASETS/htcondor/examples/delphes/PythiaDelphes_config.py
-  gaudi_command: ''' $FCCSWBASEDIR/run  fccrun.py  {}''.format(condor_pars["script"])'
+  gaudi_command: ''' $FCCSWBASEDIR/run  fccrun.py  {} --nevents {} ''.format(condor_pars["script"], condor_pars["events"])'
   events: 10
   runs: 2
+  rate: 100000

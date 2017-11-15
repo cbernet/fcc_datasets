@@ -1,5 +1,6 @@
 default_parameters:
-  base_outputdir: /afs/cern.ch/work/a/alrobson/papasdagruns/eos/
+  base_outputdir: /eos/experiment/fcc/ee/datasets/papas/
+  alt_base_outputdir: eos/
   name: "CMS_eeZZ"
   input: $FCCDATASETS/htcondor/pythiafiles/ee_ZZ.txt
   script: $FCCDATASETS/htcondor/scripts/simple_papas_condor.py

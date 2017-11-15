@@ -23,8 +23,8 @@
 ##
 
 """
-To run Pythia together with Delphes
-> ./run gaudirun.py Sim/SimDelphesInterface/options/PythiaDelphes_config.py
+To run Pythia together with Delphes for fcc_datasets example delphes run
+> ./run gaudirun.py $FCCDATASETS/htcondor/examples/delphes/PythiaDelphes_config.py
 """
 import sys
 import os

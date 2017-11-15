@@ -6,6 +6,6 @@
  transfer_input_files    = parameters.yaml
  getenv					 = True
  arguments =  $(runnumber)
- transfer_input_files = parameters.yaml, Sim, Generation
+ transfer_input_files = parameters.yaml
  transfer_output_files = ""
  +AccountingGroup = "group_u_FCC.local_gen"

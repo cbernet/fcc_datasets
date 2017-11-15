@@ -46,7 +46,8 @@ if __name__ == '__main__':
     os.system(gaudi_command)
     
     #move the output files to the output directory
-    move_command = 'xrdcp output.root {}/{}/output_{}.root'.format( condor_pars["base_outputdir"], condor_pars["subdirectory"], job)
+#xrdcp
+    move_command = 'cp *.root {}/{}/output_{}.root'.format( condor_pars["base_outputdir"], condor_pars["subdirectory"], job)
     print "move files:- ", move_command
     os.system(move_command)
 #os.remove(filename)

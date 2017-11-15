@@ -9,15 +9,15 @@ from subprocess import call
 ''' Start.py is used to setup all files and directories needed for a condor batch run
     #NB You can run this under Mac and it will do everything but not make a condor submission
 
-    Usage: fcc_condor_start.py -b baseoutdir -i inputfile -s script -e nevents -r runs
+    Usage: fcc_condor_start.py  -p parameters -b base_outdir -i inputfile -s script -e events -r runs
     
     Example:
-    fcc_condor_start.py -b $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -e 100 -r 4
+    fcc_condor_start.py -p papas_parameters -b $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -e 100 -r 4
     
     Tutorial:
     #Source init.sh for
         - FCCSW 
-        - heppy
+        - heppy (TODO discuss with Colin)
         - fcc_datasets 
         
     #make a directory to contain condor working directories
@@ -26,7 +26,7 @@ from subprocess import call
     #simple small test run
     fcc_condor_start.py
     #bigger run
-    fcc_condor_start.py -e 500000 -r 10
+    fcc_condor_start.py -p papas_parameters.yaml -e 500000 -r 10
     
     Details:
     A subdirectory name will be automatically created based on the run parameters.
@@ -88,10 +88,10 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'fccpapas':'FCCPAPASCPP'})
     env_versions.write_yaml('/'.join([subdir,filename]))
     
-def setup_condor_dag_files(subdir, nevents, runs, rate = 100000):
+def setup_condor_dag_files(subdir, events, runs, rate = 100000):
     '''
     writes dag job information to the run.dag file
-    @param nevents: how many events per fcc papas run
+    @param events: how many events per fcc papas run
     @param runs: how many fcc papas runs
     @param rate: number of events that could (easily) be run in a hour
     '''
@@ -104,13 +104,13 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 100000):
     
     #automatically choose queue based on rate,
     flavour="espresso"  
-    if nevents>8*rate: #
+    if events>8*rate: #
         flavour="tomorrow" # 1 day
-    elif nevents>2*rate:
+    elif events>2*rate:
         flavour="workday" # 8 hours
-    elif nevents>rate:
+    elif events>rate:
         flavour="longlunch" # 2 hours
-    elif nevents>rate/3:
+    elif events>rate/3:
         flavour="microcentury"  # 1 hour
     print "job is flavour: " + flavour
 
@@ -124,7 +124,7 @@ def setup_condor_dag_files(subdir, nevents, runs, rate = 100000):
 
 if __name__ == '__main__':
     '''
-    Usage: fcc_condor_start.py -b base_outputdir -i inputfile -s script -e nevents -r runs
+    Usage: fcc_condor_start.py -b base_outputdir -i inputfile -s script -e events -r runs
     '''
     #read in the command line options
     parser = setup_condor_parser()
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     #create work and output directories 
     setup_condor_directories(condor_parameters["subdirectory"], condor_parameters["base_outputdir"])
     #create the dag files needed for the run
-    setup_condor_dag_files(condor_parameters["subdirectory"], condor_parameters["nevents"], condor_parameters["runs"])
+    setup_condor_dag_files(condor_parameters["subdirectory"], condor_parameters["events"], condor_parameters["runs"])
     #write parameters to working directory
     condor_parameters.write_yaml(condor_parameters["subdirectory"])    
     #write software and paramater yaml files to the output location 

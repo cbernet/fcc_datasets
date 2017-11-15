@@ -1,0 +1,10 @@
+default_parameters:
+  base_outputdir: /afs/cern.ch/work/a/alrobson/papasdagruns/eos/
+  name: "CMS_eeZZ"
+  input: $FCCDATASETS/htcondor/pythiafiles/ee_ZZ.txt
+  script: $FCCDATASETS/htcondor/scripts/simple_papas_condor.py
+  gaudi_command: '''LD_PRELOAD=$FCCSWBASEDIR/build.$BINARY_TAG/lib/libPapasUtils.so
+    $FCCSWBASEDIR/run  fccrun.py {}  --rpythiainput  {} --routput output.root  --rmaxevents {}''.format(condor_pars["script"], condor_pars["input"],  condor_pars["events"])'
+  events: 10
+  runs: 2
+  

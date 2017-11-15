@@ -27,11 +27,13 @@ To run Pythia together with Delphes
 > ./run gaudirun.py Sim/SimDelphesInterface/options/PythiaDelphes_config.py
 """
 import sys
+import os
 from Gaudi.Configuration import *
 
 from Configurables import ApplicationMgr, FCCDataSvc
 from Configurables import DelphesSaveGenJets, DelphesSaveJets, DelphesSaveMet
 from Configurables import DelphesSaveNeutralParticles, DelphesSaveChargedParticles
+
 
 
 def apply_paths(obj, names):
@@ -65,7 +67,14 @@ messageLevelDelphes=INFO
 messageLevelOut    =INFO
 
 ## Define either pythia configuration file to generate events
-pythiaConfFile="Generation/data/Pythia_ttbar.cmd"
+environ = os.environ
+scriptdir=""
+if "FCCDATASETS" in environ:
+    scriptdir = environ["FCCDATASETS"]
+else:
+    print "FCCDATASETS environment variable is missing - call init.sh"
+scriptdir = scriptdir  + "/htcondor/examples/delphes/"
+pythiaConfFile= scriptdir + "/Pythia_ttbar.cmd"
 if args.inputfile != '':
     pythiaConfFile = args.inputfile
 
@@ -73,7 +82,8 @@ if args.inputfile != '':
 #pythiaConfFile="Generation/data/Pythia_LHEinput.cmd"
 
 ## Define Delphes card
-delphesCard="Sim/SimDelphesInterface/data/FCChh_DelphesCard_Baseline_v01.tcl"
+
+delphesCard= scriptdir + "/FCChh_DelphesCard_Baseline_v01.tcl"
 if delphes_args.delphescard != None:
     delphesCard = delphes_args.delphescard
 

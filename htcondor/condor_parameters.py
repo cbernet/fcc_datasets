@@ -10,45 +10,33 @@ import optparse
 def setup_condor_parser():
     ''' Reads in options from the line command line:
     The options are
-    -p parameters -b base_outputdir -i inputfile -s script -e nevents -r runs
+    -p parameters_yaml_file -e events -r runs
+    
+    parameters is a yaml file containing the key parameters for a run.
+    It must contain name, gaudi_run, input, script, base_outputdir.
+    It may also contain events and runs in which case these do not need 
+    to be specified on the command line:- if they are specified on the command
+    line it will override the vales in this file
     '''
     from optparse import OptionParser
     #defaults are in FCCDATASETS directory
     environ = os.environ
     datasetsdir = ""
-    eosdir=""
     if "FCCDATASETS" in environ:
         datasetsdir = environ["FCCDATASETS"] 
     else:
         print "FCCDATASETS environment variable is missing - call init.sh"
-    if "EOSCONDOR" in environ:
-        eosdir = environ["EOSCONDOR"] 
-    else:
-        print "EOSCONDOR environment variable is missing - call/read init.sh"    
-        
     parser = OptionParser(
         usage='%prog  [options]',
         description='set up ready for condor dag run'
     ) 
     parser.add_option(
         "-p","--parameters", dest="parameters",
-        default="scripts/papas_parameters.yaml",
-        help="default model parameters yaml"
-    )    
-    parser.add_option(
-        "-b","--base_outputdir", dest="base_outputdir",
-        help="directory for outputs"
+        default=datasetsdir + "examples/papas/papas_parameters.yaml",
+        help="default parameters yaml"
     )
     parser.add_option(
-        "-i","--input" ,dest="input",
-        help="input file"
-    )    
-    parser.add_option(
-        "-s","--script", dest="script",
-        help="fccsw script to run"
-    ) 
-    parser.add_option(
-        "-e","--nevents", dest="nevents",
+        "-e","--events", dest="events",
         help="number of events"
     ) 
     parser.add_option(
@@ -64,7 +52,6 @@ class CondorParameters(object):
     or reading in from an existing parameters.yaml file.
     The parameters can also be written to a parameters.yaml file.
     """
-        
     def __init__(self, inputs):
         #parameters can arrive from options
         if isinstance(inputs, optparse.Values):
@@ -92,7 +79,6 @@ class CondorParameters(object):
         '''write the condor parameters to a yaml file'''
         outfile = '/'.join([path, filename])
         data = dict(parameters=dict())
-        
         for key, value in self.pars.iteritems():
                 data['parameters'][key] = value
         with open(outfile, mode='w') as outfile:
@@ -101,10 +87,8 @@ class CondorParameters(object):
                 
     def _get_next_condor_directory(self, basename=None):
         ''' make a new directory name of the form condor_basename_20171019_e10_r3_uniqueid '''
-        if basename is None:
-            basename = FilenameHandler(self.pars["input"]).core()
         dt=datetime.datetime.now().strftime('%Y%m%d')    
-        subdirectory='_'.join(("condor", basename, dt, "e" +str(self["nevents"]), "r"+str(self["runs"])))
+        subdirectory='_'.join(("condor", self["name"], dt, "e" +str(self["events"]), "r"+str(self["runs"])))
     
         #automatically number the directory so it is unique
         x=0

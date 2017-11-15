@@ -83,9 +83,8 @@ def write_condor_software_yaml(subdir, filename="software.yaml"):
                                 'podio': "PODIO",
                                 'fccdag': "FCCDAG",
                                 'heppy': "HEPPY",
-                                'junk': 'FCCJUNK',
-                                'root': 'ROOTSYS',
-                                'fccpapas':'FCCPAPASCPP'})
+                                'root': "ROOTSYS",
+                                'fccpapas':"FCCPAPASCPP"})
     env_versions.write_yaml('/'.join([subdir,filename]))
     
 def setup_condor_dag_files(subdir, events, runs, rate = 100000):

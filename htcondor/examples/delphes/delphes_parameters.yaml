@@ -1,8 +1,16 @@
+#expected usage: fcc_condor_submit -p nameofthisfile.yaml 
+#expected usage with alternative run sizes: fcc_condor_submit -p nameofthisfile.yaml  -e 100 -r 100
 default_parameters:
+  #base directory for where the root output files will go (usually eos)
   base_outputdir: /eos/experiment/fcc/ee/datasets/papas/
+  #label used for output directories
   name: delphes
+  #inputs used for the gaudi run, only gaudi_command (and anything it uses) is required
+  # eg here condor_pars["script"] is used so a script option must be provided.
+  # NB If the script does not need to be varied it can be directly included in the gaudi command instead.
   script: $FCCDATASETS/htcondor/examples/delphes/PythiaDelphes_config.py
   gaudi_command: ''' $FCCSWBASEDIR/run  fccrun.py  {} --nevents {} ''.format(condor_pars["script"], condor_pars["events"])'
+  #number of events to run (can be overridden by -e command line option)
   events: 10
   runs: 2
   rate: 100000

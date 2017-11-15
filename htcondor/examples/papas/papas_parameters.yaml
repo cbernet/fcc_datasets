@@ -1,11 +1,17 @@
 default_parameters:
+  alt_base_outputdir: /afs/cern.ch/work/a/alrobson/papasdagruns/eos/
+  #base directory for where the root output files will go (usually eos)
   base_outputdir: /eos/experiment/fcc/ee/datasets/papas/
-  alt_base_outputdir: eos/
+  #label used for output directories
   name: "CMS_eeZZ"
-  input: $FCCDATASETS/htcondor/pythiafiles/ee_ZZ.txt
-  script: $FCCDATASETS/htcondor/scripts/simple_papas_condor.py
+  #inputs used for the gaudi run
+  input: $FCCDATASETS/htcondor/examples/papas/ee_ZZ.txt
+  script: $FCCDATASETS/htcondor/examples/papas/simple_papas_condor.py
   gaudi_command: '''LD_PRELOAD=$FCCSWBASEDIR/build.$BINARY_TAG/lib/libPapasUtils.so
     $FCCSWBASEDIR/run  fccrun.py {}  --rpythiainput  {} --routput output.root  --rmaxevents {}''.format(condor_pars["script"], condor_pars["input"],  condor_pars["events"])'
+  #number of events to run
   events: 10
+  #number of condor submissions with N events
   runs: 2
-  
+  #the expected number of events per hour which will be used to set the job flavour automatically
+  rate: 100000

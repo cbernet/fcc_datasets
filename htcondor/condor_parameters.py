@@ -32,7 +32,7 @@ def setup_condor_parser():
     ) 
     parser.add_option(
         "-p","--parameters", dest="parameters",
-        default=datasetsdir + "examples/papas/papas_parameters.yaml",
+        default=datasetsdir + "/htcondor/examples/papas/papas_parameters.yaml",
         help="default parameters yaml"
     )
     parser.add_option(

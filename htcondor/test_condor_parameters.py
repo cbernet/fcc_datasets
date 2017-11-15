@@ -24,7 +24,7 @@ class TestCondorParameters(unittest.TestCase):
         """"""
         self.condor_parameters.write_yaml(os.getcwd())
         condor_pars= CondorParameters("parameters.yaml")
-        for thing in ("base_outputdir", "input", "script", "nevents", "runs", "subdirectory"):
+        for thing in ("base_outputdir", "name", "input", "script", "events", "runs", "subdirectory"):
             self.assertEqual(condor_pars[thing],self.condor_parameters[thing])
         os.remove("parameters.yaml")
         

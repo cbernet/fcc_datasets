@@ -36,6 +36,7 @@ if __name__ == '__main__':
 
     filename= outdir + "/start_"+job+".txt"
     print "started " + filename
+    os.system("touch " + filename)
 
     #create the gaudi run command from the run parameters
     gaudi_command = eval(condor_pars["gaudi_command"])
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     move_command = 'cp *.root {}/{}/output_{}.root'.format( condor_pars["base_outputdir"], condor_pars["subdirectory"], job)
     print "move files:- ", move_command
     os.system(move_command)
-#os.remove(filename)
+    os.remove(filename)
     
     print "finish gaudi run"
     

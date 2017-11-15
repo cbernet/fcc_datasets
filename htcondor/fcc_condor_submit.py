@@ -9,39 +9,39 @@ from subprocess import call
 ''' Start.py is used to setup all files and directories needed for a condor batch run
     #NB You can run this under Mac and it will do everything but not make a condor submission
 
-    Usage: fcc_condor_start.py  -p parameters -b base_outdir -i inputfile -s script -e events -r runs
+    Usage: fcc_condor_submit.py  -p parameters_yaml_file -e events -r runs
     
     Example:
-    fcc_condor_start.py -p papas_parameters -b $EOSCONDOR -i ee_ZZ.txt -s simple_papas_cms.py -e 100 -r 4
-    
+    fcc_condor_start.py -p papas_parameters.yaml
     Tutorial:
     #Source init.sh for
-        - FCCSW 
-        - heppy (TODO discuss with Colin)
-        - fcc_datasets 
-        
+    - FCCSW
+    - heppy
+    - fcc_datasets
+    
     #make a directory to contain condor working directories
     mkdir condor_runs
     cd condor_runs
+    #create an input parameters file (example in working directoy)
     #simple small test run
-    fcc_condor_start.py
+    fcc_condor_submit.py -p papas_parameters.yaml
     #bigger run
-    fcc_condor_start.py -p papas_parameters.yaml -e 500000 -r 10
+    fcc_condor_submit.py -p papas_parameters.yaml -e 100 -r 4
     
     Details:
     A subdirectory name will be automatically created based on the run parameters.
-    A working subdirectory of this name will be created in the current directory. 
+    A working subdirectory of this name will be created in the current directory.
     Log/output/error subdirectories needed for condor are created in the working directory.
-    The working directory will receive outputs/logs/errors 
+    The working directory will receive outputs/logs/errors
     from the condor_dag and condor submissions, and can be referred to to uncover any issues.
     Some scipts and submission files are copied into the working directory from $FCCSDATASET/htcondor/base
-    Some submission files are written/added to by start.py according to run parameters
+    Some submission files are written/added to by fcc_condor_submit.py according to run parameters
     
     An output subdirectory of the same name will be created in the base output directory (usually EOS) to hold root and yaml outputs
     
-    The run is submitted to condor. This executes run.dag which will execute the individual runs and, when these have completed, a finish.sub which 
-    creates a final info.yaml summary.
-'''
+    The run is submitted to condor. This executes run.dag which will execute the individual runs and, when these have completed, a finish.sub which
+    creates a final info.yaml summary. When a run is underway an empty start_N.txt file will be created in the output directory.
+    This file is removed when the run finishes and is replaced by the output root file. It allows a user to see how much of the job is underway/completed.'''
 
 def setup_condor_directories(subdir, base_outputdir):
     '''Creates a subdirectory in the current directory and in the output directory.

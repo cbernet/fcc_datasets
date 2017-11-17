@@ -1,0 +1,11 @@
+ #NB the execute script will add in the JobFlavour and queue estimated from the number of events
+ executable              = run.py
+ output                  = output/out.$(ClusterId).$(runnumber).txt
+ error                   = error/err.$(ClusterId).$(runnumber).txt
+ log                     = log/log.$(ClusterId).$(runnumber).txt
+ transfer_input_files    = parameters.yaml
+ getenv					 = True
+ arguments =  $(runnumber)
+ transfer_input_files = parameters.yaml
+ transfer_output_files = ""
+ +AccountingGroup = "group_u_FCC.local_gen"

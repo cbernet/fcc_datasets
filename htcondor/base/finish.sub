@@ -1,0 +1,12 @@
+#create summary info.yaml file once all jobs are run
+ executable              = finish.py 
+ output                  = output/finish.txt
+ error                   = error/finish.txt
+ log                     = log/finish.txt
+ getenv 				 = True
+ transfer_input_files    = parameters.yaml
+ transfer_output_files = info.yaml
+#+JobFlavour = "longlunch"
++AccountingGroup = "group_u_FCC.local_gen"
+
+Queue

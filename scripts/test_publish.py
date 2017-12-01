@@ -1,7 +1,7 @@
 import unittest
 import os
 import random
-from dataset import Dataset
+from fcc_datasets.dataset import Dataset
 
 class TestPublish(unittest.TestCase):
     
@@ -9,7 +9,7 @@ class TestPublish(unittest.TestCase):
     def test_1_publish(self):
         """Test that the publish script is working."""
         xsection = random.uniform(0, 1)
-        dsname = 'heppy/ee_to_ZZ_condor_A_703' 
+        dsname = 'heppy/papas/ee_to_ZZ_condor_A_703' 
         cmd = 'python publish.py {} -x {}'.format(
             dsname, 
             xsection

@@ -15,7 +15,6 @@ dataset_pattern_heppy = 'heppy.analyzers.JetTreeProducer.JetTreeProducer_1/jet_t
 dataset_pattern_pythia8 = 'Job*/*.root'
 
 from fcc_datasets.dataset import Dataset, Directory
-from fcc_datasets.fcc_component import FCCComponent
 
 cache = False
 
@@ -162,21 +161,26 @@ class TestPythia8Dataset(unittest.TestCase):
         self.assertEqual(self.dataset.ngoodfiles(), self.ngoodfiles)
         self.assertEqual(self.dataset.nevents(), self.nevents)
         self.assertEqual(self.dataset.jobtype(), 'pythia8')
-        
-     
-        
-class TestFCCComponent(unittest.TestCase):
-       
-    #----------------------------------------------------------------------
-    def test_1(self):
-        """Test FCC component creation"""
-        dset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
-                       cache=False)
-        comp = FCCComponent(dataset_name_fccsw, 
-                            xSection=dset.xsection())
-        self.assertListEqual(dset.list_of_good_files(),
-                             comp.files)
-  
+
+do_test = True      
+try:
+    import heppy
+except ImportError:
+    do_test = False
+if do_test:
+    from fcc_datasets.fcc_component import FCCComponent       
+    class TestFCCComponent(unittest.TestCase):
+           
+        #----------------------------------------------------------------------
+        def test_1(self):
+            """Test FCC component creation"""
+            dset = Dataset(dataset_name_fccsw, dataset_pattern_fccsw,
+                           cache=False)
+            comp = FCCComponent(dataset_name_fccsw, 
+                                xSection=dset.xsection())
+            self.assertListEqual(dset.list_of_good_files(),
+                                 comp.files)
+
         
 ##class TestDirectory(unittest.TestCase):
 ##    

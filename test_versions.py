@@ -1,6 +1,6 @@
 import unittest
 
-scriptfname = 'test/analysis_test_cfg.py'
+scriptfname = 'test/cfg_test_versions.py'
 from fcc_datasets.versions import Versions
 
 ########################################################################
@@ -10,8 +10,7 @@ class TestVersion(unittest.TestCase):
     #----------------------------------------------------------------------
     def setUp(self):
         """"""
-        self.versions = Versions(scriptfname, ['heppy', 'fcc_ee_higgs'])
-        print self.versions
+        self.versions = Versions(scriptfname, ['fcc_datasets'])
 
     #----------------------------------------------------------------------
     def test_1_yaml(self):
@@ -21,8 +20,8 @@ class TestVersion(unittest.TestCase):
         import yaml
         with open(fname) as infile:
             data = yaml.load(infile)
-            self.assertEqual(data['software']['heppy'],
-                             self.versions.tracked['heppy']['commitid'])
+            self.assertEqual(data['software']['fcc_datasets'],
+                             self.versions.tracked['fcc_datasets']['commitid'])
         
         
 if __name__ == '__main__':
